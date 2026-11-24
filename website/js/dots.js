@@ -9,8 +9,11 @@
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   window.Halftone = function (canvas, opts = {}) {
-    const o = Object.assign({ color: '#121212', band: true, swirl: true, speed: 1, swirlX: 1.05, swirlY: 0.45 }, opts);
+    const o = Object.assign({ color: 'auto', band: true, swirl: true, speed: 1, swirlX: 1.05, swirlY: 0.45 }, opts);
     const ctx = canvas.getContext('2d');
+    const resolve = () => (o.color === 'auto' ? getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#121212' : o.color);
+    let fill = resolve();
+    document.addEventListener('themechange', () => { fill = resolve(); });
     let W = 0, H = 0, fine = [], coarse = [], t = Math.random() * 100, running = true, visible = true;
     const m = { x: -9999, y: -9999, tx: -9999, ty: -9999, boost: 0 };
 
@@ -45,7 +48,7 @@
       t += (reduce ? 0.002 : 0.012) * o.speed;
       m.x += (m.tx - m.x) * 0.12; m.y += (m.ty - m.y) * 0.12; m.boost *= 0.94;
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = o.color;
+      ctx.fillStyle = fill;
       ctx.beginPath();
 
       if (o.band) {

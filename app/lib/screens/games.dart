@@ -40,12 +40,12 @@ class _GamesScreenState extends State<GamesScreen> {
   }
 
   void _deal() => setState(() {
-        _deck = [..._em, ..._em]..shuffle(math.Random());
-        _open.clear();
-        _got.clear();
-        _first = null;
-        _moves = 0;
-      });
+    _deck = [..._em, ..._em]..shuffle(math.Random());
+    _open.clear();
+    _got.clear();
+    _first = null;
+    _moves = 0;
+  });
 
   void _tapCard(int i) {
     if (_lock || _open.contains(i) || _got.contains(i)) return;
@@ -104,24 +104,37 @@ class _GamesScreenState extends State<GamesScreen> {
       body: ListView(
         padding: EdgeInsets.fromLTRB(20, pad.top + 8, 20, pad.bottom + 30),
         children: [
-          Row(children: [
-            Pressable(
-              onTap: () => Navigator.of(context).pop(),
-              child: Container(width: 42, height: 42, decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: C.line)), child: const Icon(Icons.arrow_back_rounded, size: 18)),
-            ),
-            const Spacer(),
-            const Tag('+ credits', bg: C.lime),
-          ]),
+          Row(
+            children: [
+              Pressable(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: C.card,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: C.line),
+                  ),
+                  child: const Icon(Icons.arrow_back_rounded, size: 18),
+                ),
+              ),
+              const Spacer(),
+              const Tag('+ credits', bg: C.lime),
+            ],
+          ),
           const SizedBox(height: 18),
           const Reveal(child: Headline('Play. Think. ', 'Earn credits.', size: 42)),
           const SizedBox(height: 20),
-          Row(children: [
-            Text('Memory match', style: serif(28)),
-            const Spacer(),
-            Text('$_moves MOVES', style: mono(11)),
-            const SizedBox(width: 8),
-            Pressable(onTap: _deal, child: const Icon(Icons.refresh_rounded)),
-          ]),
+          Row(
+            children: [
+              Text('Memory match', style: serif(28)),
+              const Spacer(),
+              Text('$_moves MOVES', style: mono(11)),
+              const SizedBox(width: 8),
+              Pressable(onTap: _deal, child: const Icon(Icons.refresh_rounded)),
+            ],
+          ),
           const SizedBox(height: 12),
           GridView.count(
             crossAxisCount: 4,
@@ -132,7 +145,13 @@ class _GamesScreenState extends State<GamesScreen> {
             children: [for (var i = 0; i < _deck.length; i++) _card(i)],
           ),
           const SizedBox(height: 26),
-          Row(children: [Text('Reaction time', style: serif(28)), const Spacer(), Text(_best == null ? 'BEST —' : 'BEST ${_best}MS', style: mono(11, color: C.tealD))]),
+          Row(
+            children: [
+              Text('Reaction time', style: serif(28)),
+              const Spacer(),
+              Text(_best == null ? 'BEST —' : 'BEST ${_best}MS', style: mono(11, color: C.tealD)),
+            ],
+          ),
           const SizedBox(height: 12),
           GestureDetector(
             onTapDown: (_) => _tapReaction(),
@@ -141,13 +160,20 @@ class _GamesScreenState extends State<GamesScreen> {
               height: 200,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: switch (_rState) { 'wait' => const Color(0xFFE5484D), 'go' => C.lime, _ => C.dark },
+                color: switch (_rState) {
+                  'wait' => const Color(0xFFE5484D),
+                  'go' => C.lime,
+                  _ => C.dark,
+                },
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: Text(
-                switch (_rState) { 'wait' => 'Wait for green…', 'go' => 'TAP!', 'early' => 'Too early! Tap to retry', 'done' => '$_rMs ms', _ => 'Tap to start' },
-                style: serif(_rState == 'done' ? 64 : 34, color: _rState == 'go' ? C.ink : Colors.white),
-              ),
+              child: Text(switch (_rState) {
+                'wait' => 'Wait for green…',
+                'go' => 'TAP!',
+                'early' => 'Too early! Tap to retry',
+                'done' => '$_rMs ms',
+                _ => 'Tap to start',
+              }, style: serif(_rState == 'done' ? 64 : 34, color: _rState == 'go' ? C.black : Colors.white)),
             ),
           ),
           const SizedBox(height: 22),
@@ -156,7 +182,14 @@ class _GamesScreenState extends State<GamesScreen> {
               padding: const EdgeInsets.only(bottom: 8),
               child: Card2(
                 padding: const EdgeInsets.all(14),
-                child: Row(children: [Text(g.$1, style: const TextStyle(fontSize: 26)), const SizedBox(width: 12), Expanded(child: Text(g.$2, style: serif(24))), const Tag('Coming soon')]),
+                child: Row(
+                  children: [
+                    Text(g.$1, style: const TextStyle(fontSize: 26)),
+                    const SizedBox(width: 12),
+                    Expanded(child: Text(g.$2, style: serif(24))),
+                    const Tag('Coming soon'),
+                  ],
+                ),
               ),
             ),
         ],
@@ -181,7 +214,11 @@ class _GamesScreenState extends State<GamesScreen> {
               ..rotateY(v * math.pi),
             child: Container(
               alignment: Alignment.center,
-              decoration: BoxDecoration(color: front ? (_got.contains(i) ? C.lime : Colors.white) : C.ink, borderRadius: BorderRadius.circular(14), border: Border.all(color: C.line)),
+              decoration: BoxDecoration(
+                color: front ? (_got.contains(i) ? C.lime : Colors.white) : C.black,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: C.line),
+              ),
               child: Transform(
                 alignment: Alignment.center,
                 transform: Matrix4.rotationY(front ? math.pi : 0),

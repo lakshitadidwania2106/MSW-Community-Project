@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
+import '../widgets/scene.dart';
 import 'onboarding.dart';
 
 /// Opening sequence: community photos pop in as a collage, a counter runs,
@@ -28,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     super.initState();
     _run.forward().whenComplete(() async {
       await _zoom.forward();
-      if (mounted) Navigator.of(context).pushReplacement(fadeRoute(const OnboardingScreen(), ms: 900));
+      if (mounted) Navigator.of(context).pushReplacement(fadeRoute(const WelcomeScreen(), ms: 900));
     });
   }
 
@@ -58,37 +59,50 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           final k = _run.value, z = Curves.easeInOutCubic.transform(_zoom.value);
           final shown = (k * 1.1 * n).floor();
           final pw = size.width * 0.46, ph = pw * 4 / 3;
-          return Stack(children: [
-            for (var i = 0; i < n; i++)
-              if (i < shown) _photo(i, size, pw, ph, z),
-            // wordmark + counter (difference blend so it reads on any photo)
-            Positioned(
-              left: 28,
-              right: 28,
-              bottom: size.height * 0.16,
-              child: Opacity(
-                opacity: 1 - z,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  ClipRect(
-                    child: Transform.translate(
-                      offset: Offset(0, (1 - Curves.easeOutCubic.transform((k * 2.2).clamp(0, 1))) * 110),
-                      child: Text.rich(TextSpan(children: [
-                        TextSpan(text: 'MSW', style: serif(110, color: C.onDark)),
-                        TextSpan(text: '.', style: serif(110, color: C.teal)),
-                      ])),
-                    ),
+          return Stack(
+            children: [
+              for (var i = 0; i < n; i++)
+                if (i < shown) _photo(i, size, pw, ph, z),
+              // wordmark + counter (difference blend so it reads on any photo)
+              Positioned(
+                left: 28,
+                right: 28,
+                bottom: size.height * 0.16,
+                child: Opacity(
+                  opacity: 1 - z,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRect(
+                        child: Transform.translate(
+                          offset: Offset(0, (1 - Curves.easeOutCubic.transform((k * 2.2).clamp(0, 1))) * 110),
+                          child: const Padding(padding: EdgeInsets.only(bottom: 8), child: Logo(light: true, height: 96)),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        height: 1,
+                        color: Colors.white12,
+                        alignment: Alignment.centerLeft,
+                        child: FractionallySizedBox(
+                          widthFactor: Curves.easeOutCubic.transform(k),
+                          child: Container(color: C.teal),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('LOADING THE COMMUNITY', style: mono(11, color: C.onDark.withValues(alpha: 0.7))),
+                          Text((Curves.easeOutCubic.transform(k) * 100).round().toString().padLeft(3, '0'), style: mono(11, color: C.onDark.withValues(alpha: 0.7))),
+                        ],
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  Container(height: 1, color: Colors.white12, alignment: Alignment.centerLeft, child: FractionallySizedBox(widthFactor: Curves.easeOutCubic.transform(k), child: Container(color: C.teal))),
-                  const SizedBox(height: 10),
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Text('LOADING THE COMMUNITY', style: mono(11, color: C.onDark.withValues(alpha: 0.7))),
-                    Text((Curves.easeOutCubic.transform(k) * 100).round().toString().padLeft(3, '0'), style: mono(11, color: C.onDark.withValues(alpha: 0.7))),
-                  ]),
-                ]),
+                ),
               ),
-            ),
-          ]);
+            ],
+          );
         },
       ),
     );
@@ -121,7 +135,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         curve: Curves.easeOutBack,
         builder: (_, s, child) => Opacity(
           opacity: op * ((s - 0.55) / 0.45).clamp(0, 1),
-          child: Transform.rotate(angle: r * (1 - (last ? z : 0)), child: Transform.scale(scale: s, child: child)),
+          child: Transform.rotate(
+            angle: r * (1 - (last ? z : 0)),
+            child: Transform.scale(scale: s, child: child),
+          ),
         ),
         child: Container(
           decoration: BoxDecoration(
@@ -132,7 +149,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           clipBehavior: Clip.antiAlias,
           child: ColorFiltered(
             colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: last ? 0.45 * z : 0), BlendMode.darken),
-            child: Image.network(photo(i), fit: BoxFit.cover, errorBuilder: (_, _, _) => const ColoredBox(color: C.dark2)),
+            child: Image.network(
+              photo(i),
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => ColoredBox(color: C.dark2),
+            ),
           ),
         ),
       ),

@@ -7,16 +7,7 @@ import 'package:flutter/scheduler.dart';
 /// A diagonal ribbon of fine dots + a swirling field of big dots.
 /// Dots push away from the finger / cursor and swell under it.
 class Halftone extends StatefulWidget {
-  const Halftone({
-    super.key,
-    this.color = const Color(0xFF121212),
-    this.band = true,
-    this.swirl = true,
-    this.swirlX = 1.05,
-    this.swirlY = 0.45,
-    this.spacing = 11,
-    this.speed = 1,
-  });
+  const Halftone({super.key, this.color = const Color(0xFF121212), this.band = true, this.swirl = true, this.swirlX = 1.05, this.swirlY = 0.45, this.spacing = 11, this.speed = 1});
 
   final Color color;
   final bool band, swirl;
@@ -40,8 +31,7 @@ class _HalftoneState extends State<Halftone> with SingleTickerProviderStateMixin
       _m = (_target == _off || _m == _off) ? _target : Offset.lerp(_m, _target, 0.14)!;
       _boost *= 0.94;
       _time.value = e.inMicroseconds / 1e6;
-    })
-      ..start();
+    })..start();
   }
 
   @override
@@ -64,7 +54,9 @@ class _HalftoneState extends State<Halftone> with SingleTickerProviderStateMixin
         },
         onPointerMove: (e) => _target = e.localPosition,
         onPointerUp: (_) => Future.delayed(const Duration(milliseconds: 500), () => _target = _off),
-        child: RepaintBoundary(child: CustomPaint(size: Size.infinite, painter: _HalftonePainter(this))),
+        child: RepaintBoundary(
+          child: CustomPaint(size: Size.infinite, painter: _HalftonePainter(this)),
+        ),
       ),
     );
   }

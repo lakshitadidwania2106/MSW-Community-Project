@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MSW Community — where students, colleges, companies & investors meet</title>
   <meta name="description" content="Hackathons, reels-based courses, jobs, internships, company tasks, a digital student ID and investors — one community for every student, college, company and investor." />
+  <link rel="icon" type="image/png" href="img/icon.png" />
+  <script src="js/theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -16,7 +18,7 @@
   <div class="preloader" aria-hidden="true">
     <div class="pl-photos"></div>
     <div class="pl-inner">
-      <div class="pl-word"><span>M</span><span>S</span><span>W</span><span class="pl-dot">.</span></div>
+      <div class="pl-word"><img class="pl-logo" src="img/logo_light.png" alt="MSW" /></div>
       <div class="pl-bar"><i></i></div>
       <div class="pl-meta"><span>Loading the community</span><span class="pl-count">000</span></div>
     </div>
@@ -27,7 +29,7 @@
 
   <!-- ============ NAV ============ -->
   <header class="nav">
-    <a href="index.html" class="logo" data-magnetic>MSW <em>Community</em><i>.</i></a>
+    <a href="index.html" class="logo" data-magnetic><img class="logo-mark" src="img/logo_dark.png" alt="" /><span>MSW <em>Community</em><i>.</i></span></a>
     <nav class="nav-links">
       <a href="#ecosystem">Ecosystem</a>
       <a href="#features">Platform</a>
@@ -37,6 +39,7 @@
       <a href="blog.html">Blog</a>
       <a href="login.html" class="nav-login">Log in</a>
     </nav>
+    <button class="theme-btn" data-theme-toggle aria-label="Toggle dark mode"><svg class="ic sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="ic moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
     <a href="login.html?role=student" class="btn-outline" data-magnetic><span>Join the beta</span></a>
     <button class="burger" aria-label="Open menu"><i></i><i></i></button>
   </header>
@@ -52,7 +55,7 @@
       <canvas id="heroDots"></canvas>
       <div class="hero-inner">
         <p class="eyebrow reveal-up"><span class="pulse"></span> The student operating system</p>
-        <h1 class="hero-title split">Where students <em>build,</em> learn <br class="br-d" />&amp; get <em>discovered.</em></h1>
+        <h1 class="hero-title split">Where <mark>You</mark> <em>build,</em> learn <br class="br-d" />&amp; get <em>discovered.</em></h1>
         <p class="hero-sub reveal-up">Hackathons, 30-day reel courses, jobs, internships, real company tasks and a digital ID that travels with you — all inside one community.</p>
         <div class="hero-cta reveal-up">
           <a href="login.html?role=student" class="btn-solid" data-magnetic><span>Join the community</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -467,7 +470,7 @@
       <div><p class="mono label">Ecosystem</p><a href="https://intern.mystartupwave.com/" target="_blank" rel="noopener">MSW Labs ↗</a><a href="#events">Hackathons</a><a href="#">Services</a><a href="blog.html">Blog</a></div>
       <div class="f-news"><p class="mono label">Newsletter</p><form onsubmit="event.preventDefault();this.classList.add('ok')"><input type="email" placeholder="you@college.edu" required /><button>→</button><span class="ok-msg">You’re in ✓</span></form></div>
     </div>
-    <div class="f-word" aria-hidden="true">MSW<i>.</i></div>
+    <div class="f-word" aria-hidden="true"><img src="img/logo_light.png" alt="" /></div>
     <div class="f-bot mono"><span>© 2026 MSW Community</span><span>Made for students, by students</span><a href="#" class="to-top">Back to top ↑</a></div>
   </footer>
 

@@ -260,7 +260,7 @@
             <div class="d-card rv"><div class="c-head"><span class="c-title">Applications</span><span class="r"><button class="b sm ghost go-jobs">All</button></span></div><div class="rows">${apps.map(appRow).join('')}</div></div>
             <div class="d-card rv"><div class="c-head"><span class="c-title">Picked <em>for you</em></span></div><div class="rows">${jobs.slice(0, 3).map((j) => `<div class="row"><div class="sq" style="background:${j.col}">${j.c[0]}</div><div class="t"><b>${j.r}</b><small>${j.c} · ${j.m}</small></div><span class="chip2 teal">${j.match}%</span></div>`).join('')}</div></div>
             <div class="d-card lime rv"><div class="c-head"><span class="c-title">Badges</span><span class="r mono" style="font-size:11px">23 EARNED</span></div>
-              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;font-size:30px;text-align:center">${['🔥', '🏆', '🧠', '⚡', '🚀', '💎', '🎯', '🌱'].map((e, i) => `<span style="background:#fff;border-radius:16px;padding:10px 0;${i > 5 ? 'opacity:.35;filter:grayscale(1)' : ''}">${e}</span>`).join('')}</div></div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;font-size:30px;text-align:center">${['🔥', '🏆', '🧠', '⚡', '🚀', '💎', '🎯', '🌱'].map((e, i) => `<span style="background:var(--card);border-radius:16px;padding:10px 0;${i > 5 ? 'opacity:.35;filter:grayscale(1)' : ''}">${e}</span>`).join('')}</div></div>
           </div>`,
         mount(r) {
           $('.go-learn', r).onclick = () => Dash.go('learn'); $('.go-feed', r).onclick = () => Dash.go('feed'); $('.go-jobs', r).onclick = () => Dash.go('jobs');

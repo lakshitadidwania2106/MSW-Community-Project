@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../data.dart';
 import '../theme.dart';
+import '../widgets/scene.dart';
 import '../widgets/ui.dart';
 import 'onboarding.dart';
 import 'pitch.dart';
@@ -23,15 +24,28 @@ class ProfileScreen extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.fromLTRB(20, pad.top + 12, 20, pad.bottom + 110),
       children: [
-        Row(children: [
-          const Label('Your profile'),
-          const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(color: role.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(99)),
-            child: Row(children: [Icon(role.icon, size: 14, color: role.color), const SizedBox(width: 5), Text(role.name, style: sans(12, color: role.color, weight: FontWeight.w600))]),
-          ),
-        ]),
+        Row(
+          children: [
+            const Label('Your profile'),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(color: role.color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(99)),
+              child: Row(
+                children: [
+                  Icon(role.icon, size: 14, color: role.color),
+                  const SizedBox(width: 5),
+                  Text(
+                    role.name,
+                    style: sans(12, color: role.color, weight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            const ThemeToggle(),
+          ],
+        ),
         const SizedBox(height: 8),
         const Reveal(child: Headline('Not a résumé. ', 'A passport.', size: 40)),
         const SizedBox(height: 18),
@@ -41,30 +55,54 @@ class ProfileScreen extends StatelessWidget {
         const SizedBox(height: 18),
         Reveal(
           delay: 200,
-          child: Row(children: [
-            Expanded(child: PrimaryButton('Share ID', icon: false, height: 52, onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile link copied: msw.community/aanya'))))),
-            const SizedBox(width: 10),
-            Pressable(
-              child: Container(width: 52, height: 52, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: C.line2)), child: const Icon(Icons.qr_code_2_rounded)),
-            ),
-          ]),
+          child: Row(
+            children: [
+              Expanded(
+                child: PrimaryButton(
+                  'Share ID',
+                  icon: false,
+                  height: 52,
+                  onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile link copied: msw.community/aanya'))),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Pressable(
+                child: Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: C.line2),
+                  ),
+                  child: const Icon(Icons.qr_code_2_rounded),
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 22),
         Reveal(
           delay: 260,
           child: Card2(
             padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Column(children: [
-              _row(Icons.edit_rounded, 'Edit profile', 'Name, college, skills'),
-              _row(Icons.workspace_premium_rounded, 'Certificates', 'MSW Labs · 2 earned'),
-              _row(Icons.description_rounded, 'Resume', 'Auto-built from your ID · ATS 92', onTap: () => Navigator.of(context).push(fadeRoute(const ResumeScreen()))),
-              _row(Icons.lightbulb_rounded, 'My business ideas', 'Krishi Lite · validation 82', onTap: () => Navigator.of(context).push(fadeRoute(const PitchScreen()))),
-              _row(Icons.workspace_premium_rounded, 'Credits & plans', '2,450 credits · Starter', onTap: () => Navigator.of(context).push(fadeRoute(const PlansScreen()))),
-              _row(Icons.task_alt_rounded, 'My tasks & applications', '3 active'),
-              _row(Icons.swap_horiz_rounded, 'Switch portal', 'Student · Company · Investor · College · Admin',
-                  onTap: () => Navigator.of(context).pushAndRemoveUntil(fadeRoute(const OnboardingScreen()), (_) => false)),
-              _row(Icons.settings_rounded, 'Settings', 'Notifications, privacy', last: true),
-            ]),
+            child: Column(
+              children: [
+                _row(Icons.edit_rounded, 'Edit profile', 'Name, college, skills'),
+                _row(Icons.workspace_premium_rounded, 'Certificates', 'MSW Labs · 2 earned'),
+                _row(Icons.description_rounded, 'Resume', 'Auto-built from your ID · ATS 92', onTap: () => Navigator.of(context).push(fadeRoute(const ResumeScreen()))),
+                _row(Icons.lightbulb_rounded, 'My business ideas', 'Krishi Lite · validation 82', onTap: () => Navigator.of(context).push(fadeRoute(const PitchScreen()))),
+                _row(Icons.workspace_premium_rounded, 'Credits & plans', '2,450 credits · Starter', onTap: () => Navigator.of(context).push(fadeRoute(const PlansScreen()))),
+                _row(Icons.task_alt_rounded, 'My tasks & applications', '3 active'),
+                _row(
+                  Icons.swap_horiz_rounded,
+                  'Switch portal',
+                  'Student · Company · Investor · College · Admin',
+                  onTap: () => Navigator.of(context).pushAndRemoveUntil(fadeRoute(const OnboardingScreen()), (_) => false),
+                ),
+                _row(darkMode.value ? Icons.dark_mode_rounded : Icons.light_mode_rounded, 'Appearance', darkMode.value ? 'Dark mode · tap for light' : 'Light mode · tap for dark', onTap: toggleTheme),
+                _row(Icons.settings_rounded, 'Settings', 'Notifications, privacy', last: true),
+              ],
+            ),
           ),
         ),
       ],
@@ -72,24 +110,41 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _row(IconData ic, String t, String s, {VoidCallback? onTap, bool last = false}) => Pressable(
-        onTap: onTap,
-        scale: 0.98,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(border: last ? null : const Border(bottom: BorderSide(color: C.line))),
-          child: Row(children: [
-            Container(width: 38, height: 38, decoration: BoxDecoration(color: C.bg2, borderRadius: BorderRadius.circular(12)), child: Icon(ic, size: 19)),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    onTap: onTap,
+    scale: 0.98,
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        border: last ? null : Border(bottom: BorderSide(color: C.line)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(color: C.bg2, borderRadius: BorderRadius.circular(12)),
+            child: Icon(ic, size: 19),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(t, style: sans(15, weight: FontWeight.w600, height: 1.2)),
-                Text(s, style: sans(12, color: C.muted, height: 1.3), maxLines: 1, overflow: TextOverflow.ellipsis),
-              ]),
+                Text(
+                  s,
+                  style: sans(12, color: C.muted, height: 1.3),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            const Icon(Icons.chevron_right_rounded, color: C.muted),
-          ]),
-        ),
-      );
+          ),
+          Icon(Icons.chevron_right_rounded, color: C.muted),
+        ],
+      ),
+    ),
+  );
 }
 
 class IdCard extends StatefulWidget {
@@ -113,47 +168,47 @@ class _IdCardState extends State<IdCard> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, c) {
-      final w = c.maxWidth, h = w / 0.68;
-      return GestureDetector(
-        onTap: () => _flip.status == AnimationStatus.completed || _flip.status == AnimationStatus.forward ? _flip.reverse() : _flip.forward(),
-        onPanStart: (_) => setState(() => _drag = true),
-        onPanUpdate: (d) => setState(() {
-          _tilt = Offset(((d.localPosition.dx / w) - 0.5).clamp(-0.5, 0.5), ((d.localPosition.dy / h) - 0.5).clamp(-0.5, 0.5));
-        }),
-        onPanEnd: (_) => setState(() {
-          _drag = false;
-          _tilt = Offset.zero;
-        }),
-        child: TweenAnimationBuilder<Offset>(
-          tween: Tween(end: _tilt),
-          duration: Duration(milliseconds: _drag ? 90 : 900),
-          curve: _drag ? Curves.linear : Curves.elasticOut,
-          builder: (_, t, _) => AnimatedBuilder(
-            animation: Listenable.merge([_flip, _holo]),
-            builder: (_, _) {
-              final f = Curves.easeInOutCubic.transform(_flip.value);
-              final angle = f * math.pi;
-              final showBack = angle > math.pi / 2;
-              final m = Matrix4.identity()
-                ..setEntry(3, 2, 0.0012)
-                ..rotateX(-t.dy * 0.5)
-                ..rotateY(t.dx * 0.6 + angle);
-              return SizedBox(
-                height: h,
-                child: Transform(
-                  alignment: Alignment.center,
-                  transform: m,
-                  child: showBack
-                      ? Transform(alignment: Alignment.center, transform: Matrix4.rotationY(math.pi), child: _back(w, h))
-                      : _front(w, h, t),
-                ),
-              );
-            },
+    return LayoutBuilder(
+      builder: (context, c) {
+        final w = c.maxWidth, h = w / 0.68;
+        return GestureDetector(
+          onTap: () => _flip.status == AnimationStatus.completed || _flip.status == AnimationStatus.forward ? _flip.reverse() : _flip.forward(),
+          onPanStart: (_) => setState(() => _drag = true),
+          onPanUpdate: (d) => setState(() {
+            _tilt = Offset(((d.localPosition.dx / w) - 0.5).clamp(-0.5, 0.5), ((d.localPosition.dy / h) - 0.5).clamp(-0.5, 0.5));
+          }),
+          onPanEnd: (_) => setState(() {
+            _drag = false;
+            _tilt = Offset.zero;
+          }),
+          child: TweenAnimationBuilder<Offset>(
+            tween: Tween(end: _tilt),
+            duration: Duration(milliseconds: _drag ? 90 : 900),
+            curve: _drag ? Curves.linear : Curves.elasticOut,
+            builder: (_, t, _) => AnimatedBuilder(
+              animation: Listenable.merge([_flip, _holo]),
+              builder: (_, _) {
+                final f = Curves.easeInOutCubic.transform(_flip.value);
+                final angle = f * math.pi;
+                final showBack = angle > math.pi / 2;
+                final m = Matrix4.identity()
+                  ..setEntry(3, 2, 0.0012)
+                  ..rotateX(-t.dy * 0.5)
+                  ..rotateY(t.dx * 0.6 + angle);
+                return SizedBox(
+                  height: h,
+                  child: Transform(
+                    alignment: Alignment.center,
+                    transform: m,
+                    child: showBack ? Transform(alignment: Alignment.center, transform: Matrix4.rotationY(math.pi), child: _back(w, h)) : _front(w, h, t),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Widget _front(double w, double h, Offset t) {
@@ -164,106 +219,159 @@ class _IdCardState extends State<IdCard> with TickerProviderStateMixin {
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.35), blurRadius: 40, offset: Offset(-t.dx * 30, 30 - t.dy * 20))],
       ),
       clipBehavior: Clip.antiAlias,
-      child: Stack(children: [
-        // holographic foil
-        Positioned.fill(
-          child: Opacity(
-            opacity: 0.32 + t.distance * 0.3,
-            child: ImageFiltered(
-              imageFilter: ui.ImageFilter.blur(sigmaX: 28, sigmaY: 28),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: SweepGradient(
-                    center: Alignment(t.dx * 2, t.dy * 2),
-                    colors: const [Color(0xFFFF7AD9), Color(0xFF7AFCFF), Color(0xFFFFF38A), Color(0xFF8AFFB4), Color(0xFFB98AFF), Color(0xFFFF7AD9)],
-                    transform: GradientRotation(_holo.value * math.pi * 2 + t.dx * 3),
+      child: Stack(
+        children: [
+          // holographic foil
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.32 + t.distance * 0.3,
+              child: ImageFiltered(
+                imageFilter: ui.ImageFilter.blur(sigmaX: 28, sigmaY: 28),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: SweepGradient(
+                      center: Alignment(t.dx * 2, t.dy * 2),
+                      colors: const [Color(0xFFFF7AD9), Color(0xFF7AFCFF), Color(0xFFFFF38A), Color(0xFF8AFFB4), Color(0xFFB98AFF), Color(0xFFFF7AD9)],
+                      transform: GradientRotation(_holo.value * math.pi * 2 + t.dx * 3),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-        Positioned.fill(child: CustomPaint(painter: _Lines())),
-        Padding(
-          padding: const EdgeInsets.all(22),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Text.rich(TextSpan(children: [TextSpan(text: 'MSW', style: serif(28, color: Colors.white)), TextSpan(text: '.', style: serif(28, color: C.teal))])),
-              const Spacer(),
-              Text('STUDENT · VERIFIED ✓', style: mono(9, color: Colors.white70)),
-            ]),
-            const SizedBox(height: 20),
-            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Container(
-                width: 96,
-                height: 114,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFFFF9A76), Color(0xFFC86DD7), Color(0xFF6C5CE7)])),
-                child: Text('AS', style: serif(38, color: Colors.white)),
-              ),
-              const Spacer(),
-              Container(
-                width: 48,
-                height: 38,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), gradient: const LinearGradient(colors: [Color(0xFFD9C27A), Color(0xFFF6E7B0), Color(0xFFB39448)])),
-                child: Container(margin: const EdgeInsets.symmetric(horizontal: 11, vertical: 8), decoration: BoxDecoration(border: Border.all(color: Colors.black26), borderRadius: BorderRadius.circular(4))),
-              ),
-            ]),
-            const SizedBox(height: 18),
-            Text('Aanya Sharma', style: serif(40, color: Colors.white)),
-            const SizedBox(height: 4),
-            Text('B.Tech Computer Science · 3rd year', style: sans(13, color: Colors.white70)),
-            Text('IIT DELHI', style: mono(10, color: C.teal)),
-            const Spacer(),
-            Row(children: [
-              for (final s in const [('14', 'Level'), ('9', 'Hacks'), ('23', 'Badges'), ('128', 'IQ')])
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 6),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.06), borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.white.withValues(alpha: 0.08))),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(s.$1, style: serif(24, color: Colors.white)),
-                      Text(s.$2, style: sans(10, color: Colors.white60)),
-                    ]),
-                  ),
+          Positioned.fill(child: CustomPaint(painter: _Lines())),
+          Padding(
+            padding: const EdgeInsets.all(22),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Logo(light: true, height: 26),
+                    const Spacer(),
+                    Text('STUDENT · VERIFIED ✓', style: mono(9, color: Colors.white70)),
+                  ],
                 ),
-            ]),
-            const SizedBox(height: 14),
-            Row(children: [
-              Text('MSW-2026-0412', style: mono(10, color: Colors.white70)),
-              const Spacer(),
-              SizedBox(width: 110, height: 26, child: CustomPaint(painter: _Barcode())),
-            ]),
-          ]),
-        ),
-      ]),
+                const SizedBox(height: 20),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 96,
+                      height: 114,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFFFF9A76), Color(0xFFC86DD7), Color(0xFF6C5CE7)]),
+                      ),
+                      child: Text('AS', style: serif(38, color: Colors.white)),
+                    ),
+                    const Spacer(),
+                    Container(
+                      width: 48,
+                      height: 38,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        gradient: const LinearGradient(colors: [Color(0xFFD9C27A), Color(0xFFF6E7B0), Color(0xFFB39448)]),
+                      ),
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black26),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 18),
+                Text('Aanya Sharma', style: serif(40, color: Colors.white)),
+                const SizedBox(height: 4),
+                Text('B.Tech Computer Science · 3rd year', style: sans(13, color: Colors.white70)),
+                Text('IIT DELHI', style: mono(10, color: C.teal)),
+                const Spacer(),
+                Row(
+                  children: [
+                    for (final s in const [('14', 'Level'), ('9', 'Hacks'), ('23', 'Badges'), ('128', 'IQ')])
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.06),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(s.$1, style: serif(24, color: Colors.white)),
+                              Text(s.$2, style: sans(10, color: Colors.white60)),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Text('MSW-2026-0412', style: mono(10, color: Colors.white70)),
+                    const Spacer(),
+                    SizedBox(width: 110, height: 26, child: CustomPaint(painter: _Barcode())),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _back(double w, double h) {
     return Container(
       padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(color: C.paper, borderRadius: BorderRadius.circular(28), border: Border.all(color: C.line), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 40, offset: const Offset(0, 30))]),
-      child: Column(children: [
-        Row(children: [
-          Text.rich(TextSpan(children: [TextSpan(text: 'MSW', style: serif(28)), TextSpan(text: '.', style: serif(28, color: C.tealD))])),
+      decoration: BoxDecoration(
+        color: C.paper,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: C.line),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 40, offset: const Offset(0, 30))],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Logo(height: 26),
+              const Spacer(),
+              Text('SCAN TO VIEW PROFILE', style: mono(9)),
+            ],
+          ),
           const Spacer(),
-          Text('SCAN TO VIEW PROFILE', style: mono(9)),
-        ]),
-        const Spacer(),
-        Container(
-          width: w * 0.62,
-          height: w * 0.62,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18), border: Border.all(color: C.line)),
-          child: CustomPaint(painter: _Qr()),
-        ),
-        const Spacer(),
-        Wrap(spacing: 6, runSpacing: 6, alignment: WrapAlignment.center, children: [for (final s in const ['React', 'Python', 'Figma', 'ML', 'Public speaking']) Tag(s)]),
-        const SizedBox(height: 14),
-        Text('VALID WHILE YOU KEEP BUILDING · MSW.COMMUNITY/AANYA', textAlign: TextAlign.center, style: mono(9)),
-      ]),
+          Container(
+            width: w * 0.62,
+            height: w * 0.62,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: C.card,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: C.line),
+            ),
+            child: CustomPaint(painter: _Qr()),
+          ),
+          const Spacer(),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            alignment: WrapAlignment.center,
+            children: [
+              for (final s in const ['React', 'Python', 'Figma', 'ML', 'Public speaking']) Tag(s),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text('VALID WHILE YOU KEEP BUILDING · MSW.COMMUNITY/AANYA', textAlign: TextAlign.center, style: mono(9)),
+        ],
+      ),
     );
   }
 }

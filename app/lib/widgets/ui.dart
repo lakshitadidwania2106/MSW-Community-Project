@@ -26,12 +26,7 @@ class _PressableState extends State<Pressable> {
       onTapUp: (_) => setState(() => _down = false),
       onTapCancel: () => setState(() => _down = false),
       onTap: widget.onTap,
-      child: AnimatedScale(
-        scale: _down ? widget.scale : 1,
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOutCubic,
-        child: widget.child,
-      ),
+      child: AnimatedScale(scale: _down ? widget.scale : 1, duration: const Duration(milliseconds: 180), curve: Curves.easeOutCubic, child: widget.child),
     );
   }
 }
@@ -48,7 +43,10 @@ class Reveal extends StatefulWidget {
 }
 
 class _RevealState extends State<Reveal> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: Duration(milliseconds: widget.ms));
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: Duration(milliseconds: widget.ms),
+  );
   late final Animation<double> _a = CurvedAnimation(parent: _c, curve: Curves.easeOutCubic);
 
   @override
@@ -67,13 +65,13 @@ class _RevealState extends State<Reveal> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _a,
-        child: widget.child,
-        builder: (_, child) => Opacity(
-          opacity: _a.value,
-          child: Transform.translate(offset: Offset(0, (1 - _a.value) * widget.offset), child: child),
-        ),
-      );
+    animation: _a,
+    child: widget.child,
+    builder: (_, child) => Opacity(
+      opacity: _a.value,
+      child: Transform.translate(offset: Offset(0, (1 - _a.value) * widget.offset), child: child),
+    ),
+  );
 }
 
 String fmtNum(int n) {
@@ -94,11 +92,11 @@ class CountUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0, end: to.toDouble()),
-        duration: Duration(milliseconds: ms),
-        curve: Curves.easeOutQuart,
-        builder: (_, v, _) => Text('$prefix${fmtNum(v.round())}$suffix', style: style),
-      );
+    tween: Tween(begin: 0, end: to.toDouble()),
+    duration: Duration(milliseconds: ms),
+    curve: Curves.easeOutQuart,
+    builder: (_, v, _) => Text('$prefix${fmtNum(v.round())}$suffix', style: style),
+  );
 }
 
 /// Serif headline with an italic second half — the signature MSW type style.
@@ -111,25 +109,36 @@ class Headline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text.rich(
-        TextSpan(children: [
-          TextSpan(text: a, style: serif(size, color: color)),
-          TextSpan(text: b, style: serif(size, color: italicColor ?? color, italic: true)),
-        ]),
-        textAlign: align,
-      );
+    TextSpan(
+      children: [
+        TextSpan(
+          text: a,
+          style: serif(size, color: color),
+        ),
+        TextSpan(
+          text: b,
+          style: serif(size, color: italicColor ?? color, italic: true),
+        ),
+      ],
+    ),
+    textAlign: align,
+  );
 }
 
 class Tag extends StatelessWidget {
-  const Tag(this.text, {super.key, this.bg = C.bg2, this.fg = C.ink});
+  const Tag(this.text, {super.key, this.bg, this.fg});
   final String text;
-  final Color bg, fg;
+  final Color? bg, fg;
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(99)),
-        child: Text(text, style: sans(12, color: fg, weight: FontWeight.w500, height: 1.2)),
-      );
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    decoration: BoxDecoration(color: bg ?? C.bg2, borderRadius: BorderRadius.circular(99)),
+    child: Text(
+      text,
+      style: sans(12, color: fg ?? (bg == null ? C.ink : C.black), weight: FontWeight.w500, height: 1.2),
+    ),
+  );
 }
 
 class GAvatar extends StatelessWidget {
@@ -141,51 +150,69 @@ class GAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(colors: colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
-          borderRadius: BorderRadius.circular(radius ?? size / 2),
-        ),
-        child: Text(initials, style: sans(size * 0.32, color: Colors.white, weight: FontWeight.w600)),
-      );
+    width: size,
+    height: size,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      gradient: LinearGradient(colors: colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
+      borderRadius: BorderRadius.circular(radius ?? size / 2),
+    ),
+    child: Text(
+      initials,
+      style: sans(size * 0.32, color: Colors.white, weight: FontWeight.w600),
+    ),
+  );
 }
 
 /// Pill button; [loading] swaps the label for a sweeping bar.
 class PrimaryButton extends StatelessWidget {
-  const PrimaryButton(this.label, {super.key, this.onTap, this.bg = C.ink, this.fg = Colors.white, this.loading = false, this.icon = true, this.height = 58});
+  const PrimaryButton(this.label, {super.key, this.onTap, this.bg, this.fg, this.loading = false, this.icon = true, this.height = 58});
   final String label;
   final VoidCallback? onTap;
-  final Color bg, fg;
+  final Color? bg, fg;
   final bool loading, icon;
   final double height;
 
   @override
-  Widget build(BuildContext context) => Pressable(
-        onTap: loading ? null : onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 400),
-          height: height,
-          width: double.infinity,
-          decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(99)),
-          clipBehavior: Clip.antiAlias,
-          child: Stack(alignment: Alignment.center, children: [
+  Widget build(BuildContext context) {
+    final bg = this.bg ?? C.ink, fg = this.fg ?? (this.bg == null ? C.onInk : Colors.white);
+    return Pressable(
+      onTap: loading ? null : onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 400),
+        height: height,
+        width: double.infinity,
+        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(99)),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
             if (loading) const Positioned.fill(child: _Sweep()),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              child: Row(
-                key: ValueKey(loading ? 'l' : label),
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(loading ? 'One sec…' : label, style: sans(16, color: fg, weight: FontWeight.w500)),
-                  if (icon && !loading) ...[const SizedBox(width: 10), Icon(Icons.arrow_forward_rounded, color: fg, size: 18)],
-                ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  child: Row(
+                    key: ValueKey(loading ? 'l' : label),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        loading ? 'One sec…' : label,
+                        style: sans(height < 50 ? 14 : 16, color: fg, weight: FontWeight.w600),
+                      ),
+                      if (icon && !loading) ...[const SizedBox(width: 10), Icon(Icons.arrow_forward_rounded, color: fg, size: 18)],
+                    ],
+                  ),
+                ),
               ),
             ),
-          ]),
+          ],
         ),
-      );
+      ),
+    );
+  }
 }
 
 class _Sweep extends StatefulWidget {
@@ -204,17 +231,15 @@ class _SweepState extends State<_Sweep> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _c,
-        builder: (_, _) => FractionallySizedBox(
-          alignment: Alignment(-1 + _c.value * 2, 0),
-          widthFactor: 0.4,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [Colors.white.withValues(alpha: 0), Colors.white.withValues(alpha: 0.25), Colors.white.withValues(alpha: 0)]),
-            ),
-          ),
-        ),
-      );
+    animation: _c,
+    builder: (_, _) => FractionallySizedBox(
+      alignment: Alignment(-1 + _c.value * 2, 0),
+      widthFactor: 0.4,
+      child: DecoratedBox(
+        decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.white.withValues(alpha: 0), Colors.white.withValues(alpha: 0.25), Colors.white.withValues(alpha: 0)])),
+      ),
+    ),
+  );
 }
 
 /// Soft animated colour blobs — used behind hackathon cards & reels.
@@ -238,8 +263,8 @@ class _BlobsState extends State<Blobs> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => RepaintBoundary(
-        child: CustomPaint(painter: _BlobPainter(_c, widget), size: Size.infinite),
-      );
+    child: CustomPaint(painter: _BlobPainter(_c, widget), size: Size.infinite),
+  );
 }
 
 class _BlobPainter extends CustomPainter {
@@ -290,21 +315,21 @@ class Label extends StatelessWidget {
 }
 
 class Card2 extends StatelessWidget {
-  const Card2({super.key, required this.child, this.color = C.paper, this.padding = const EdgeInsets.all(20), this.radius = 24, this.border = true});
+  const Card2({super.key, required this.child, this.color, this.padding = const EdgeInsets.all(20), this.radius = 24, this.border = true});
   final Widget child;
-  final Color color;
+  final Color? color;
   final EdgeInsets padding;
   final double radius;
   final bool border;
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: padding,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(radius),
-          border: border ? Border.all(color: C.line) : null,
-        ),
-        child: child,
-      );
+    padding: padding,
+    decoration: BoxDecoration(
+      color: color ?? C.paper,
+      borderRadius: BorderRadius.circular(radius),
+      border: border ? Border.all(color: C.line) : null,
+    ),
+    child: child,
+  );
 }

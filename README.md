@@ -21,7 +21,7 @@ app/       Mobile app (Flutter: iOS, Android, web, macOS)
 
 | Page | What it is |
 |---|---|
-| `index.html` | Landing page: halftone hero, the "touch" scroll animation, feature cards, MSW ecosystem, hackathons, digital ID, portals, investors, pricing, social & media |
+| `index.html` | Landing page (light/dark toggle, MSW logo): halftone hero, the "touch" scroll animation, feature cards, MSW ecosystem, hackathons, digital ID, portals, investors, pricing, social & media |
 | `login.html` | One login for all portals: `?role=student \| company \| investor \| college \| admin` |
 | `student.html` | Feed and link posts, blogs, MSW Labs Day 1–30, quizzes, IQ & reasoning, games, hackathons and events (students can post events), jobs and internships, tasks and contributions, business ideas (pitch → validate → mentor → investors), resume builder, digital ID, credits and plans |
 | `company.html` | Post jobs and internships, applicant pipeline (drag & drop), allocate paid tasks and review submissions, talent search |
@@ -41,14 +41,22 @@ Community photos are placeholders. Replace the list in `website/js/photos.js` wi
 
 ## App — `app/`
 
-A Flutter app with the same design language as the website.
+A Flutter app with the same design language as the website, in **light and dark themes**. Switch with the sun/moon button or under Account → Appearance.
 
-- **Opening:** a photo-collage splash, a role picker and a role-aware login.
-- **Feed:** stories, "paste a link, get a post" from X, LinkedIn and Reddit, and double-tap to like.
-- **Explore:** hackathons with live countdowns, events (students can post), jobs, internships, tasks (My tasks and Contribute) and business ideas with a pitch flow.
-- **Reels:** the MSW Labs full-stack course, Day 1–30.
-- **Grow:** courses, games, resume, ideas, plans, quizzes and IQ tests, badges, a GitHub analyser, refer and earn, and blogs (with writing).
-- **ID:** a digital student ID card that tilts, flips and has a QR code.
+- **Onboarding:** a splash collage with the MSW logo, then three illustrated welcome slides with hills, a halftone sun, stickers and page dots.
+- **"Who's joining?":** every portal has its own illustrated world.
+  - Student: lilac.
+  - Company: coral sunset.
+  - Investor: indigo night.
+  - College: sky blue.
+  - Admin: teal night.
+- **Login:** an illustrated header per role, a rotating sticker seal, and sign-in / create-account.
+- **A separate app per role:**
+  - **Student:** Feed, Explore (hackathons, events, jobs, internships, tasks, ideas), Reels (MSW Labs Day 1–30), Grow (courses, games, resume, pitch, plans, quizzes, IQ, badges, GitHub analyser, referrals, blogs) and a digital ID.
+  - **Company:** hiring overview, job postings with a live preview, an applicant pipeline, task allocation and paid reviews.
+  - **Investor:** portfolio, a swipeable deal deck with a pledge slider, pitch days and a watchlist.
+  - **College:** host events with a live poster designer, a judging panel with a live leaderboard, student verification and team check-in.
+  - **Admin:** mission control with a live activity feed, task allocation, approvals and moderation, a quiz builder, badges and users.
 
 **Run it:**
 
@@ -57,6 +65,8 @@ cd app
 flutter pub get
 flutter run -d chrome      # or an iOS / Android device (needs Xcode / Android Studio)
 ```
+
+Brand assets live in `app/assets/brand/` and `website/img/`.
 
 ## Pricing (draft)
 

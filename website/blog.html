@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Journal — MSW Community</title>
+  <link rel="icon" type="image/png" href="img/icon.png" />
+  <script src="js/theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -13,7 +15,7 @@
   <div class="cursor" aria-hidden="true"><div class="c-dot"></div><div class="c-ring"><span class="c-label"></span></div></div>
 
   <header class="nav">
-    <a href="index.html" class="logo" data-magnetic>MSW <em>Community</em><i>.</i></a>
+    <a href="index.html" class="logo" data-magnetic><img class="logo-mark" src="img/logo_dark.png" alt="" /><span>MSW <em>Community</em><i>.</i></span></a>
     <nav class="nav-links">
       <a href="index.html#features">Platform</a>
       <a href="index.html#events">Hackathons</a>
@@ -22,6 +24,7 @@
       <a href="blog.html">Blog</a>
       <a href="login.html">Log in</a>
     </nav>
+    <button class="theme-btn" data-theme-toggle aria-label="Toggle dark mode"><svg class="ic sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="ic moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
     <a href="login.html?role=student" class="btn-outline" data-magnetic><span>Join the beta</span></a>
     <button class="burger" aria-label="Open menu"><i></i><i></i></button>
   </header>
@@ -63,7 +66,7 @@
   </main>
 
   <footer class="footer">
-    <div class="f-word" aria-hidden="true">MSW<i>.</i></div>
+    <div class="f-word" aria-hidden="true"><img src="img/logo_light.png" alt="" /></div>
     <div class="f-bot mono"><span>© 2026 MSW Community</span><span>Made for students, by students</span><a href="#" class="to-top">Back to top ↑</a></div>
   </footer>
 

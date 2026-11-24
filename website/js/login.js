@@ -47,7 +47,7 @@
   };
   const order = Object.keys(ROLES);
 
-  const dots = Halftone($('#authDots'), { color: '#121212', swirlX: 1.1, swirlY: 0.75 });
+  const dots = Halftone($('#authDots'), { swirlX: 1.1, swirlY: 0.75 });
   const pill = $('.role-pill');
   let current = null;
 

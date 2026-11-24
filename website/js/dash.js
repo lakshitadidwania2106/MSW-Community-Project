@@ -243,7 +243,7 @@
       <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cfg.color}" stop-opacity=".22"/><stop offset="1" stop-color="${cfg.color}" stop-opacity="0"/></linearGradient></defs></svg>
       <div class="d-shell">
         <aside class="d-side">
-          <a href="index.html" class="d-logo">MSW <em>Community</em><i>.</i></a>
+          <a href="index.html" class="d-logo"><img class="d-mark" src="img/logo_light.png" alt="" /><span>MSW <em>Community</em><i>.</i></span></a>
           <span class="d-role"><b></b>${cfg.roleName} portal</span>
           <nav class="d-nav"><span class="d-ind"></span>${navHtml}</nav>
           <div class="d-side-foot">
@@ -257,6 +257,7 @@
             <button class="d-icon-btn d-burger" aria-label="Menu">${icon('menu')}</button>
             <div><div class="d-crumb"></div><h1 class="d-title"></h1></div>
             <div class="d-top-r">
+              <button class="d-icon-btn" data-theme-toggle aria-label="Toggle dark mode"><svg class="ic sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg><svg class="ic moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
               <button class="d-search">${icon('search')}<span>Search or jump to…</span><kbd>⌘K</kbd></button>
               <div style="position:relative">
                 <button class="d-icon-btn d-bell" aria-label="Notifications">${icon('bell')}<span class="dot"></span></button>

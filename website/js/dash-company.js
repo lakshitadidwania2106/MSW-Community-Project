@@ -63,7 +63,7 @@
           <div class="fld"><label>Minimum MSW level</label><input type="range" min="1" max="20" value="8" class="j-lv" /></div>
         </div>
         <div><p class="mono label">Live preview</p>
-          <div class="d-card" style="background:#fff"><div class="row" style="border:0;padding:0 0 12px"><div class="sq" style="background:#ff7a59">L</div><div class="t"><b class="p-r">Mobile Developer Intern</b><small class="p-m">Lumen Labs · Remote · ₹35k/mo</small></div></div>
+          <div class="d-card" style="background:var(--card)"><div class="row" style="border:0;padding:0 0 12px"><div class="sq" style="background:#ff7a59">L</div><div class="t"><b class="p-r">Mobile Developer Intern</b><small class="p-m">Lumen Labs · Remote · ₹35k/mo</small></div></div>
             <div class="filters2 p-s"></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><span class="chip2 p-t">Internship</span><span class="mono p-lv">LVL 8+</span></div>
             <button class="b" style="width:100%;margin-top:14px">One-tap apply</button></div>
           <p class="muted" style="font-size:12px;margin-top:10px">Students see exactly this card in the app and on the website.</p></div>
