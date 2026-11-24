@@ -112,7 +112,7 @@ class _ResumeScreenState extends State<ResumeScreen> {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: PrimaryButton('Export PDF', icon: false, onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Resume.pdf saved to your files ✓')))),
+                child: PrimaryButton('Export PDF', icon: false, onTap: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Resume.pdf saved to your files')))),
               ),
             ],
           ),

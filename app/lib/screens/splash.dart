@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     super.initState();
     _run.forward().whenComplete(() async {
       await _zoom.forward();
-      if (mounted) Navigator.of(context).pushReplacement(fadeRoute(const WelcomeScreen(), ms: 900));
+      if (mounted) Navigator.of(context).pushReplacement(fadeRoute(const OnboardingScreen(), ms: 900));
     });
   }
 

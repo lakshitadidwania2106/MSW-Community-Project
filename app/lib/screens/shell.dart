@@ -6,6 +6,7 @@ import 'dash/admin.dart';
 import 'dash/college.dart';
 import 'dash/company.dart';
 import 'dash/investor.dart';
+import 'compose.dart';
 import 'explore.dart';
 import 'feed.dart';
 import 'grow.dart';
@@ -23,10 +24,11 @@ class Shell extends StatelessWidget {
   Widget build(BuildContext context) => switch (role.role) {
     Role.student => RoleShell(
       accent: C.teal,
-      darkTab: 2,
+      darkTab: 3,
       tabs: [
-        (Icons.dynamic_feed_rounded, 'Feed', (a, go) => FeedScreen(role: role, onOpenReels: () => go(2))),
+        (Icons.dynamic_feed_rounded, 'Feed', (a, go) => FeedScreen(role: role, onOpenReels: () => go(3))),
         (Icons.explore_rounded, 'Explore', (a, go) => const ExploreScreen()),
+        (Icons.add_rounded, 'Post', (a, go) => ComposeScreen(onPosted: () => go(0))),
         (Icons.play_circle_fill_rounded, 'Reels', (a, go) => ReelsScreen(active: a)),
         (Icons.auto_graph_rounded, 'Grow', (a, go) => const GrowScreen()),
         (Icons.badge_rounded, 'ID', (a, go) => ProfileScreen(role: role)),
@@ -48,28 +50,26 @@ class Shell extends StatelessWidget {
         (Icons.space_dashboard_rounded, 'Home', (a, go) => InvestorHome(go: go)),
         (Icons.style_rounded, 'Deals', (a, go) => const InvestorDeals()),
         (Icons.pie_chart_rounded, 'Portfolio', (a, go) => const InvestorPortfolio()),
-        (Icons.event_rounded, 'Events', (a, go) => const InvestorEvents()),
         (Icons.person_rounded, 'Account', (a, go) => const InvestorAccount()),
       ],
     ),
     Role.college => RoleShell(
       accent: role.color,
       tabs: [
-        (Icons.space_dashboard_rounded, 'Home', (a, go) => CollegeHome(go: go)),
-        (Icons.emoji_events_rounded, 'Events', (a, go) => const CollegeEvents()),
-        (Icons.gavel_rounded, 'Judging', (a, go) => const CollegeJudging()),
-        (Icons.verified_rounded, 'Students', (a, go) => const CollegeStudents()),
-        (Icons.account_balance_rounded, 'Account', (a, go) => const CollegeAccount()),
+        (Icons.space_dashboard_outlined, 'Home', (a, go) => CollegeHome(go: go)),
+        (Icons.event_outlined, 'Events', (a, go) => const CollegeEvents()),
+        (Icons.campaign_outlined, 'Announce', (a, go) => const CollegeAnnouncements()),
+        (Icons.account_balance_outlined, 'Account', (a, go) => const CollegeAccount()),
       ],
     ),
     Role.admin => RoleShell(
       accent: role.color,
       tabs: [
         (Icons.radar_rounded, 'Control', (a, go) => AdminHome(go: go)),
-        (Icons.view_kanban_rounded, 'Tasks', (a, go) => const AdminTasks()),
-        (Icons.shield_rounded, 'Approvals', (a, go) => const AdminApprovals()),
-        (Icons.quiz_rounded, 'Quizzes', (a, go) => const AdminQuizzes()),
-        (Icons.manage_accounts_rounded, 'Account', (a, go) => const AdminAccount()),
+        (Icons.dynamic_feed_outlined, 'Content', (a, go) => const AdminContent()),
+        (Icons.manage_accounts_outlined, 'Users', (a, go) => const AdminUsers()),
+        (Icons.quiz_outlined, 'Quizzes', (a, go) => const AdminQuizzes()),
+        (Icons.settings_outlined, 'Account', (a, go) => const AdminAccount()),
       ],
     ),
   };
@@ -134,35 +134,51 @@ class _RoleShellState extends State<RoleShell> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           for (var i = 0; i < widget.tabs.length; i++)
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => _go(i),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 450),
-                curve: Curves.easeOutCubic,
-                height: 48,
-                padding: EdgeInsets.symmetric(horizontal: i == _tab ? 16 : 12),
-                decoration: BoxDecoration(color: i == _tab ? widget.accent : Colors.transparent, borderRadius: BorderRadius.circular(99)),
-                child: Row(
-                  children: [
-                    Icon(widget.tabs[i].$1, size: 22, color: i == _tab ? selFg : C.onDark.withValues(alpha: 0.7)),
-                    AnimatedSize(
-                      duration: const Duration(milliseconds: 450),
-                      curve: Curves.easeOutCubic,
-                      child: i == _tab
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Text(
-                                widget.tabs[i].$2,
-                                style: sans(13, color: selFg, weight: FontWeight.w600),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                  ],
+            if (widget.tabs[i].$2 == 'Post' && i != _tab)
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => _go(i),
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: C.lime,
+                    shape: BoxShape.circle,
+                    boxShadow: [BoxShadow(color: C.lime.withValues(alpha: 0.35), blurRadius: 12)],
+                  ),
+                  child: const Icon(Icons.add_rounded, color: C.black, size: 26),
+                ),
+              )
+            else
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => _go(i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 450),
+                  curve: Curves.easeOutCubic,
+                  height: 48,
+                  padding: EdgeInsets.symmetric(horizontal: i == _tab ? 14 : (widget.tabs.length > 5 ? 9 : 12)),
+                  decoration: BoxDecoration(color: i == _tab ? widget.accent : Colors.transparent, borderRadius: BorderRadius.circular(99)),
+                  child: Row(
+                    children: [
+                      Icon(widget.tabs[i].$1, size: 22, color: i == _tab ? selFg : C.onDark.withValues(alpha: 0.7)),
+                      AnimatedSize(
+                        duration: const Duration(milliseconds: 450),
+                        curve: Curves.easeOutCubic,
+                        child: i == _tab
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Text(
+                                  widget.tabs[i].$2,
+                                  style: sans(13, color: selFg, weight: FontWeight.w600),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
         ],
       ),
     );

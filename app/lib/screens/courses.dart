@@ -63,12 +63,12 @@ class _CoursesScreenState extends State<CoursesScreen> {
                 onTap: () {
                   setState(() => _done++);
                   Navigator.of(ctx).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Day ${d + 1} complete — +50 XP 🔥')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Day ${d + 1} complete — +50 XP')));
                 },
               ),
             if (st == 'lock') PrimaryButton('Locked — finish Day ${_done + 1} first', bg: C.muted, icon: false),
             const SizedBox(height: 10),
-            PrimaryButton('Open on MSW Labs ↗', bg: C.lime, fg: C.ink, icon: false, onTap: openMswLabs),
+            PrimaryButton('Open on MSW Labs', bg: C.lime, fg: C.ink, icon: false, onTap: openMswLabs),
           ],
         ),
       ),
@@ -141,7 +141,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                           decoration: BoxDecoration(color: C.lime, borderRadius: BorderRadius.circular(99)),
                           child: Text(
-                            'Open MSW Labs ↗',
+                            'Open MSW Labs',
                             style: sans(13, color: C.black, weight: FontWeight.w600),
                           ),
                         ),
@@ -178,7 +178,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text((d + 1).toString().padLeft(2, '0'), style: serif(24, color: d < _done ? C.onDark : (d > _done ? C.muted : C.ink))),
-                          Text(d < _done ? 'DONE' : (d == _done ? 'TODAY' : '🔒'), style: mono(7, color: d < _done ? C.teal : C.muted)),
+                          Text(d < _done ? 'DONE' : (d == _done ? 'TODAY' : 'LOCKED'), style: mono(7, color: d < _done ? C.teal : C.muted)),
                         ],
                       ),
                     ),

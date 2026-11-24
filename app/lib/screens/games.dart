@@ -14,8 +14,8 @@ class GamesScreen extends StatefulWidget {
 }
 
 class _GamesScreenState extends State<GamesScreen> {
-  static const _em = ['🧠', '⚡', '🎯', '🧩', '🔥', '💎'];
-  late List<String> _deck;
+  static const _em = [Icons.psychology_rounded, Icons.bolt_rounded, Icons.gps_fixed_rounded, Icons.extension_rounded, Icons.local_fire_department_rounded, Icons.diamond_rounded];
+  late List<IconData> _deck;
   final _open = <int>{}, _got = <int>{};
   int? _first;
   int _moves = 0;
@@ -59,7 +59,7 @@ class _GamesScreenState extends State<GamesScreen> {
     _moves++;
     if (_deck[a] == _deck[i]) {
       setState(() => _got.addAll([a, i]));
-      if (_got.length == _deck.length) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Solved in $_moves moves — +${math.max(10, 60 - _moves * 2)} credits 🧠')));
+      if (_got.length == _deck.length) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Solved in $_moves moves — +${math.max(10, 60 - _moves * 2)} credits')));
     } else {
       _lock = true;
       Future.delayed(const Duration(milliseconds: 700), () {
@@ -84,7 +84,7 @@ class _GamesScreenState extends State<GamesScreen> {
           _rMs = ms;
           if (_best == null || ms < _best!) _best = ms;
         });
-        if (ms < 250) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lightning reflexes — +20 credits ⚡')));
+        if (ms < 250) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lightning reflexes — +20 credits')));
       default:
         setState(() => _rState = 'wait');
         _rTimer = Timer(Duration(milliseconds: 1200 + math.Random().nextInt(2200)), () {
@@ -177,14 +177,14 @@ class _GamesScreenState extends State<GamesScreen> {
             ),
           ),
           const SizedBox(height: 22),
-          for (final g in const [('🔤', 'Word sprint'), ('🧮', 'Number ninja'), ('🗺', 'Logic grid')])
+          for (final g in const [(Icons.abc_rounded, 'Word sprint'), (Icons.calculate_outlined, 'Number ninja'), (Icons.grid_on_rounded, 'Logic grid')])
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Card2(
                 padding: const EdgeInsets.all(14),
                 child: Row(
                   children: [
-                    Text(g.$1, style: const TextStyle(fontSize: 26)),
+                    Icon(g.$1, size: 26, color: C.ink),
                     const SizedBox(width: 12),
                     Expanded(child: Text(g.$2, style: serif(24))),
                     const Tag('Coming soon'),
@@ -222,7 +222,7 @@ class _GamesScreenState extends State<GamesScreen> {
               child: Transform(
                 alignment: Alignment.center,
                 transform: Matrix4.rotationY(front ? math.pi : 0),
-                child: front ? Text(_deck[i], style: const TextStyle(fontSize: 28)) : Text('M.', style: serif(22, color: C.teal)),
+                child: front ? Icon(_deck[i], size: 30, color: C.black) : Text('M.', style: serif(22, color: C.teal)),
               ),
             ),
           );

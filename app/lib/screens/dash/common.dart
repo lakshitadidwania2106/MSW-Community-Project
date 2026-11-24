@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../data.dart';
 import '../../theme.dart';
+import '../../widgets/halftone.dart';
 import '../../widgets/scene.dart';
 import '../../widgets/ui.dart';
 import '../onboarding.dart';
@@ -20,7 +21,7 @@ class DashHeader extends StatelessWidget {
   final RoleInfo role;
   final String a, b;
   final String? sub;
-  final List<(String, String)> notes;
+  final List<(IconData, String)> notes;
 
   @override
   Widget build(BuildContext context) => Column(
@@ -33,9 +34,16 @@ class DashHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(color: role.color.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(99)),
-            child: Text(
-              '${role.emoji} ${role.name}',
-              style: sans(12, weight: FontWeight.w600, color: role.color),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(role.icon, size: 13, color: role.color),
+                const SizedBox(width: 5),
+                Text(
+                  role.name,
+                  style: sans(12, weight: FontWeight.w600, color: role.color),
+                ),
+              ],
             ),
           ),
           const Spacer(),
@@ -57,7 +65,12 @@ class DashHeader extends StatelessWidget {
                         padding: const EdgeInsets.all(12),
                         child: Row(
                           children: [
-                            Text(n.$1, style: const TextStyle(fontSize: 22)),
+                            Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(color: C.bg2, borderRadius: BorderRadius.circular(12)),
+                              child: Icon(n.$1, size: 19, color: C.ink),
+                            ),
                             const SizedBox(width: 12),
                             Expanded(child: Text(n.$2, style: sans(14))),
                           ],
@@ -600,7 +613,7 @@ class ChipBar extends StatelessWidget {
   );
 }
 
-/// Shared "Account" tab: profile card, appearance (light/dark), settings, switch portal.
+/// Shared "Account" tab: profile card, appearance (light/dark), settings, log out.
 class AccountTab extends StatelessWidget {
   const AccountTab({super.key, required this.role, required this.name, required this.sub, required this.initials, this.extra = const []});
   final RoleInfo role;
@@ -610,7 +623,6 @@ class AccountTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pad = MediaQuery.of(context).padding;
-    final p = rolePalettes[role.role]!;
     return ListView(
       padding: EdgeInsets.fromLTRB(20, pad.top + 12, 20, pad.bottom + 110),
       children: [
@@ -622,14 +634,15 @@ class AccountTab extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: Stack(
             children: [
-              Positioned.fill(child: Scene(p: p, horizon: 0.62)),
+              Positioned.fill(child: Container(color: C.black)),
+              Positioned.fill(child: Halftone(color: Colors.white.withValues(alpha: 0.85), band: false, swirlX: 1.05, swirlY: 0.3, spacing: 9)),
               Positioned(
                 left: 18,
                 bottom: 18,
                 right: 18,
                 child: Row(
                   children: [
-                    GAvatar(initials, size: 58, colors: [role.color, p.accent]),
+                    GAvatar(initials, size: 58, colors: [role.color, C.teal]),
                     const SizedBox(width: 14),
                     Expanded(
                       child: Column(
@@ -643,10 +656,21 @@ class AccountTab extends StatelessWidget {
                   ],
                 ),
               ),
+              const Positioned(left: 18, top: 18, child: Logo(light: true, height: 22)),
               Positioned(
-                right: 14,
-                top: 14,
-                child: Seal(text: p.seal, color: p.accent, size: 70, center: role.emoji),
+                right: 16,
+                top: 16,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(99)),
+                  child: Row(
+                    children: [
+                      Icon(role.icon, size: 13, color: Colors.white),
+                      const SizedBox(width: 5),
+                      Text(role.name.toUpperCase(), style: mono(9, color: Colors.white)),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
@@ -667,14 +691,7 @@ class AccountTab extends StatelessWidget {
               _row(context, Icons.notifications_active_rounded, 'Notifications', 'Push & email'),
               _row(context, Icons.lock_rounded, 'Privacy & security', '2FA, sessions'),
               _row(context, Icons.help_outline_rounded, 'Help & support', 'support@mystartupwave.com'),
-              _row(
-                context,
-                Icons.swap_horiz_rounded,
-                'Switch portal',
-                'Student · Company · Investor · College · Admin',
-                onTap: () => Navigator.of(context).pushAndRemoveUntil(fadeRoute(const OnboardingScreen()), (_) => false),
-              ),
-              _row(context, Icons.logout_rounded, 'Log out', 'See you soon', last: true, onTap: () => Navigator.of(context).pushAndRemoveUntil(fadeRoute(const WelcomeScreen()), (_) => false)),
+              _row(context, Icons.logout_rounded, 'Log out', 'See you soon', last: true, onTap: () => Navigator.of(context).pushAndRemoveUntil(fadeRoute(const OnboardingScreen()), (_) => false)),
             ],
           ),
         ),
@@ -753,4 +770,199 @@ class _Appearance extends StatelessWidget {
     );
     return Row(children: [opt(false, 'Light', Icons.light_mode_rounded), const SizedBox(width: 10), opt(true, 'Dark', Icons.dark_mode_rounded)]);
   }
+}
+
+/// Add / remove items as chips (skills, perks, rounds, tracks…).
+class ChipsEditor extends StatefulWidget {
+  const ChipsEditor({super.key, required this.items, required this.hint, this.onChanged, this.numbered = false});
+  final List<String> items;
+  final String hint;
+  final VoidCallback? onChanged;
+  final bool numbered;
+  @override
+  State<ChipsEditor> createState() => _ChipsEditorState();
+}
+
+class _ChipsEditorState extends State<ChipsEditor> {
+  final _ctl = TextEditingController();
+  @override
+  void dispose() {
+    _ctl.dispose();
+    super.dispose();
+  }
+
+  void _add() {
+    final v = _ctl.text.trim();
+    if (v.isEmpty) return;
+    setState(() => widget.items.add(v));
+    _ctl.clear();
+    widget.onChanged?.call();
+  }
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      if (widget.numbered)
+        for (var i = 0; i < widget.items.length; i++)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Row(
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(color: C.ink, shape: BoxShape.circle),
+                  child: Text(
+                    '${i + 1}',
+                    style: sans(11, color: C.onInk, weight: FontWeight.w700),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Text(widget.items[i], style: sans(14))),
+                GestureDetector(
+                  onTap: () {
+                    setState(() => widget.items.removeAt(i));
+                    widget.onChanged?.call();
+                  },
+                  child: Icon(Icons.close_rounded, size: 18, color: C.muted),
+                ),
+              ],
+            ),
+          )
+      else
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: [
+            for (final it in List.of(widget.items))
+              Container(
+                padding: const EdgeInsets.fromLTRB(12, 6, 6, 6),
+                decoration: BoxDecoration(color: C.bg2, borderRadius: BorderRadius.circular(99)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(it, style: sans(13)),
+                    const SizedBox(width: 4),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() => widget.items.remove(it));
+                        widget.onChanged?.call();
+                      },
+                      child: Icon(Icons.close_rounded, size: 16, color: C.muted),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      const SizedBox(height: 8),
+      TextField(
+        controller: _ctl,
+        onSubmitted: (_) => _add(),
+        style: sans(14),
+        decoration: InputDecoration(
+          hintText: widget.hint,
+          hintStyle: sans(13, color: C.muted),
+          isDense: true,
+          filled: true,
+          fillColor: C.card,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          suffixIcon: IconButton(
+            onPressed: _add,
+            icon: Icon(Icons.add_circle_rounded, color: C.ink),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: C.line2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+            borderSide: BorderSide(color: C.ink),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+/// Labelled form section used by the long posting forms.
+class FormSection extends StatelessWidget {
+  const FormSection(this.n, this.title, {super.key, required this.children});
+  final int n;
+  final String title;
+  final List<Widget> children;
+  @override
+  Widget build(BuildContext context) => Container(
+    margin: const EdgeInsets.only(bottom: 14),
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: C.paper,
+      borderRadius: BorderRadius.circular(22),
+      border: Border.all(color: C.line),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 26,
+              height: 26,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(color: C.ink, shape: BoxShape.circle),
+              child: Text(
+                '$n',
+                style: sans(12, color: C.onInk, weight: FontWeight.w700),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(title, style: serif(24)),
+          ],
+        ),
+        const SizedBox(height: 14),
+        for (final c in children) Padding(padding: const EdgeInsets.only(bottom: 10), child: c),
+      ],
+    ),
+  );
+}
+
+/// Single-select pill row.
+class PillSelect extends StatelessWidget {
+  const PillSelect({super.key, required this.options, required this.value, required this.onChanged, this.label});
+  final List<String> options;
+  final String value;
+  final ValueChanged<String> onChanged;
+  final String? label;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      if (label != null) ...[Text(label!.toUpperCase(), style: mono(9.5)), const SizedBox(height: 6)],
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final o in options)
+            GestureDetector(
+              onTap: () => onChanged(o),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                decoration: BoxDecoration(
+                  color: o == value ? C.ink : C.card,
+                  borderRadius: BorderRadius.circular(99),
+                  border: Border.all(color: o == value ? C.ink : C.line2),
+                ),
+                child: Text(
+                  o,
+                  style: sans(13, weight: FontWeight.w500, color: o == value ? C.onInk : C.ink),
+                ),
+              ),
+            ),
+        ],
+      ),
+    ],
+  );
 }

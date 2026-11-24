@@ -245,7 +245,7 @@ class _QuizScreenState extends State<QuizScreen> with SingleTickerProviderStateM
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('🧠', style: TextStyle(fontSize: 20)),
+                const Icon(Icons.psychology_rounded, color: Colors.white, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'Badge unlocked: Sharp Mind',
@@ -260,7 +260,7 @@ class _QuizScreenState extends State<QuizScreen> with SingleTickerProviderStateM
           'Add to my ID',
           onTap: () {
             Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$score added to your MSW ID ✓')));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$score added to your MSW ID')));
           },
         ),
         const SizedBox(height: 10),

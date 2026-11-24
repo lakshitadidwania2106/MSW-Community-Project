@@ -1,36 +1,35 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import '../../api.dart';
 import '../../data.dart';
 import '../../theme.dart';
 import '../../widgets/ui.dart';
+import '../details.dart';
+import '../post.dart';
 import 'common.dart';
 
 /// ===================== INVESTOR (Nikhil Varma, angel) =====================
 final _inv = roles[2];
 Color get _c => _inv.color;
+const _notes = [
+  (Icons.trending_up_rounded, 'Krishi crossed 1,800 farmers onboarded'),
+  (Icons.auto_awesome_outlined, '4 new ideas match your thesis'),
+  (Icons.description_outlined, 'Ledgerly shared an updated pitch deck'),
+];
 
-class Deal {
-  Deal(this.name, this.pitch, this.by, this.sector, this.stage, this.raised, this.goal, this.users, this.growth, this.color);
-  final String name, pitch, by, sector, stage;
-  double raised;
-  final double goal;
-  final int users;
-  final List<double> growth;
-  final Color color;
+class Holding {
+  const Holding(this.name, this.invested, this.value, this.stage, this.change);
+  final String name, stage;
+  final double invested, value;
+  final int change;
 }
 
-final deals = [
-  Deal('Krishi', 'Soil health from a ₹200 sensor', 'Meera J. · IIT Kharagpur', 'AgriTech', 'Seed', 7.8, 10, 1840, [2, 3, 5, 6, 9, 12, 15, 21], C.tealD),
-  Deal('Nibble', 'Exam prep in 5-minute bites', 'Arjun & Sana · DTU', 'EdTech', 'Pre-seed', 2.3, 5, 12400, [3, 4, 4, 7, 8, 11, 14, 19], const Color(0xFF6C5CE7)),
-  Deal('Pulse', 'AI triage for rural clinics', 'Kabir N. · AIIMS', 'HealthTech', 'Idea', 1.1, 5, 1020, [1, 1, 2, 2, 3, 5, 6, 9], const Color(0xFFE8613F)),
-  Deal('Ledgerly', 'UPI bookkeeping for kirana stores', 'Rhea P. · IIIT Hyd', 'FinTech', 'Seed', 6.4, 15, 3300, [4, 5, 7, 8, 8, 10, 13, 16], const Color(0xFF0A66C2)),
-  Deal('Loop', 'Campus resale marketplace', 'Dev S. · VIT', 'Consumer', 'Pre-seed', 0.9, 3, 5600, [2, 4, 5, 5, 6, 8, 9, 12], const Color(0xFFC6A400)),
-  Deal('Volt', 'Battery swapping for e-rickshaws', 'Ishaan M. · IIT Delhi', 'Climate', 'Idea', 0.4, 8, 140, [1, 1, 1, 2, 2, 3, 3, 4], C.teal),
-];
-final watchlist = <String>{'Krishi'};
-const _notes = [('📈', 'Krishi crossed 1,800 farmers onboarded'), ('🎤', 'Pitch Day #7 starts Friday at 5 PM'), ('✨', '4 new ideas match your thesis')];
+const holdings = [Holding('Krishi', 2.0, 3.4, 'Seed', 70), Holding('Ledgerly', 1.5, 2.1, 'Seed', 40), Holding('Nibble', 0.8, 0.95, 'Pre-seed', 19), Holding('Hive', 1.0, 0.7, 'Pre-seed', -30)];
+
+/* ───────────── Home ───────────── */
 
 class InvestorHome extends StatelessWidget {
   const InvestorHome({super.key, required this.go});
@@ -45,10 +44,7 @@ class InvestorHome extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [Color(0xFF2B2283), Color(0xFF5B4FCF)], begin: Alignment.topLeft, end: Alignment.bottomRight),
-            borderRadius: BorderRadius.circular(26),
-          ),
+          decoration: BoxDecoration(color: C.black, borderRadius: BorderRadius.circular(26)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -64,9 +60,9 @@ class InvestorHome extends StatelessWidget {
                     builder: (_, v, _) => Text('₹${v.toStringAsFixed(2)}L', style: serif(54, color: Colors.white)),
                   ),
                   const SizedBox(width: 10),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Tag('↑ 35%', bg: C.lime),
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Tag('+35%', bg: C.lime),
                   ),
                 ],
               ),
@@ -81,28 +77,55 @@ class InvestorHome extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 1.25,
+        Row(
           children: [
-            StatTile(label: 'Ideas backed', value: 4, accent: _c, delta: '1 new', icon: Icons.auto_awesome_rounded),
-            StatTile(label: 'New this week', value: 23, accent: _c, delta: '8 match you', icon: Icons.layers_rounded),
+            Expanded(
+              child: StatTile(label: 'Ideas backed', value: 4, accent: _c, delta: '1 new', icon: Icons.auto_awesome_outlined),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: StatTile(label: 'New this week', value: ideas.length.toDouble(), accent: _c, delta: 'Match your thesis', icon: Icons.layers_outlined),
+            ),
           ],
         ),
-        SectionTitle('Hot', b: 'this week', action: 'Swipe deals →', onAction: () => go(1)),
-        SizedBox(
-          height: 210,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: 3,
-            separatorBuilder: (_, _) => const SizedBox(width: 10),
-            itemBuilder: (_, i) => SizedBox(width: 260, child: _DealCard(deals[i], compact: true)),
+        SectionTitle('Hot', b: 'this week', action: 'Open deals', onAction: () => go(1)),
+        for (final d in ideas.take(3))
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Pressable(
+              scale: 0.98,
+              onTap: () => Navigator.of(context).push(fadeRoute(IdeaDetailScreen(idea: d, investor: true))),
+              child: Card2(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    SizedBox(width: 64, height: 64, child: IdeaArt(idea: d, height: 64)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(d.name, style: sans(15, weight: FontWeight.w700)),
+                          Text(
+                            d.pitch,
+                            style: sans(12, color: C.muted),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            '₹${d.ask.toStringAsFixed(0)}L for ${d.equity.toStringAsFixed(0)}% · ${(d.raised / d.ask * 100).round()}% committed',
+                            style: sans(12, weight: FontWeight.w600, color: C.tealD),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.chevron_right_rounded, color: C.muted),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
         const SectionTitle('By', b: 'sector'),
         Card2(
           child: Donut([('AgriTech', 2, C.tealD), ('FinTech', 1.5, const Color(0xFF0A66C2)), ('EdTech', 0.8, const Color(0xFF6C5CE7)), ('Consumer', 1, C.lime)], center: '4', sub: 'startups'),
@@ -112,191 +135,158 @@ class InvestorHome extends StatelessWidget {
   }
 }
 
-class _DealCard extends StatelessWidget {
-  const _DealCard(this.d, {this.compact = false});
-  final Deal d;
-  final bool compact;
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(18),
-    decoration: BoxDecoration(
-      color: C.dark,
-      borderRadius: BorderRadius.circular(26),
-      boxShadow: compact ? null : const [BoxShadow(color: Color(0x40000000), blurRadius: 30, offset: Offset(0, 16))],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Tag(d.sector, bg: d.color, fg: Colors.white),
-            const SizedBox(width: 6),
-            Tag(d.stage, bg: Colors.white12, fg: C.onDark),
-            const Spacer(),
-            if (watchlist.contains(d.name)) const Text('★', style: TextStyle(color: Color(0xFFE0B400), fontSize: 18)),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: '${d.name} — ',
-                style: serif(compact ? 24 : 34, color: C.onDark),
-              ),
-              TextSpan(
-                text: d.pitch.toLowerCase(),
-                style: serif(compact ? 24 : 34, color: C.teal, italic: true),
-              ),
-            ],
-          ),
-          maxLines: compact ? 2 : 3,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 6),
-        Text('BY ${d.by.toUpperCase()}', style: mono(9, color: Colors.white38)),
-        if (!compact) ...[
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('USERS', style: mono(9, color: Colors.white38)),
-                  Text(fmtNum(d.users), style: serif(30, color: C.onDark)),
-                ],
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: SizedBox(height: 46, child: Spark(d.growth, color: C.lilac)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              Tag('+${((d.growth.last / d.growth[d.growth.length - 2] - 1) * 100).round()}% MoM', bg: C.lime),
-              Tag('Team of ${2 + d.name.length % 3}', bg: Colors.white12, fg: C.onDark),
-              Tag('MSW verified ✓', bg: Colors.white12, fg: C.onDark),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Text('Built at an MSW hackathon and now live with real users. Mentored by the MSW founder network.', style: sans(14, color: Colors.white70, height: 1.5)),
-        ],
-        const Spacer(),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: LinearProgressIndicator(value: d.raised / d.goal, minHeight: 7, backgroundColor: Colors.white10, valueColor: AlwaysStoppedAnimation(C.lime)),
-        ),
-        const SizedBox(height: 8),
-        Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: '₹${d.raised}L',
-                style: sans(14, color: C.onDark, weight: FontWeight.w700),
-              ),
-              TextSpan(
-                text: ' of ₹${d.goal.toStringAsFixed(0)}L raised',
-                style: sans(13, color: Colors.white54),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
+/* ───────────── Deals — wheel + cover-flow ───────────── */
 
-/// Swipe deck: right = save to watchlist, left = pass, button = back the idea.
 class InvestorDeals extends StatefulWidget {
   const InvestorDeals({super.key});
   @override
   State<InvestorDeals> createState() => _InvestorDealsState();
 }
 
-class _InvestorDealsState extends State<InvestorDeals> with SingleTickerProviderStateMixin {
-  int _top = 0;
-  Offset _drag = Offset.zero;
-  late final AnimationController _fly = AnimationController(vsync: this, duration: const Duration(milliseconds: 380));
-  Offset _flyFrom = Offset.zero, _flyTo = Offset.zero;
+class _InvestorDealsState extends State<InvestorDeals> with TickerProviderStateMixin {
+  final _wheel = PageController(viewportFraction: 0.22);
+  double _p = 0;
+  int _artPage = 0;
+  late final AnimationController _stamp = AnimationController(vsync: this, duration: const Duration(milliseconds: 650));
+  late final AnimationController _burst = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+
+  int get _i => _p.round().clamp(0, ideas.length - 1);
+
+  @override
+  void initState() {
+    super.initState();
+    _wheel.addListener(() {
+      final np = _wheel.page ?? 0;
+      if (np.round() != _p.round()) {
+        HapticFeedback.selectionClick();
+        _artPage = 0;
+      }
+      setState(() => _p = np);
+    });
+  }
 
   @override
   void dispose() {
-    _fly.dispose();
+    _wheel.dispose();
+    _stamp.dispose();
+    _burst.dispose();
     super.dispose();
   }
 
-  Future<void> _decide(bool like) async {
-    if (_top >= deals.length) return;
-    final d = deals[_top];
-    _flyFrom = _drag;
-    _flyTo = Offset(like ? 600 : -600, _drag.dy + 40);
-    await _fly.forward(from: 0);
-    setState(() {
-      if (like) watchlist.add(d.name);
-      _top++;
-      _drag = Offset.zero;
-      _fly.reset();
-    });
-    if (mounted) toast(context, like ? '★ ${d.name} saved to watchlist' : 'Passed on ${d.name}');
+  void _goNext() {
+    if (_i < ideas.length - 1) _wheel.animateToPage(_i + 1, duration: const Duration(milliseconds: 650), curve: Curves.easeInOutCubic);
   }
 
-  void _back(Deal d) {
-    var amt = 2.0;
-    showSheet(
+  Future<void> _pass() async {
+    final d = ideas[_i];
+    HapticFeedback.lightImpact();
+    setState(() {
+      if (d.decision == 'backed') d.raised = (d.raised - d.myCheque).clamp(0, d.ask);
+      d.decision = 'passed';
+      d.myCheque = 0;
+    });
+    Api.decide(d);
+    _stamp.forward(from: 0);
+    await Future.delayed(const Duration(milliseconds: 700));
+    if (mounted) _goNext();
+  }
+
+  void _undo() {
+    final d = ideas[_i];
+    setState(() {
+      if (d.decision == 'backed') d.raised = (d.raised - d.myCheque).clamp(0, d.ask);
+      d.decision = null;
+      d.myCheque = 0;
+    });
+    Api.decide(d);
+  }
+
+  void _back() {
+    final d = ideas[_i];
+    var amt = d.minTicket <= 1 ? 1.0 : d.minTicket;
+    final chips = <double>{d.minTicket, 1, 2, 5}.where((t) => t >= d.minTicket && t <= d.ask).toList()..sort();
+    sheet(
       context,
       StatefulBuilder(
         builder: (ctx, setS) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${d.sector.toUpperCase()} · ${d.stage.toUpperCase()}', style: mono(10, color: _c)),
-            const SizedBox(height: 4),
-            Headline('Back ', '${d.name}.', size: 38, italicColor: _c),
-            Text(d.pitch, style: sans(14, color: C.muted)),
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(color: d.color, borderRadius: BorderRadius.circular(14)),
+                  child: Icon(d.icon, color: Colors.white),
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: Text('Back ${d.name}', style: serif(32))),
+              ],
+            ),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                for (final t in chips)
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        setS(() => amt = t);
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: amt == t ? _blue : C.card,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: amt == t ? _blue : C.line2),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              t < 1 ? '₹${(t * 100).round()}K' : '₹${t.toStringAsFixed(0)}L',
+                              style: sans(16, weight: FontWeight.w800, color: amt == t ? Colors.white : C.ink),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '${(t / d.valuation * 100).toStringAsFixed(2)}%',
+                              style: sans(11, weight: FontWeight.w600, color: amt == t ? Colors.white70 : C.tealD),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(
-                  child: Card2(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('YOUR PLEDGE', style: mono(9)),
-                        Text('₹${amt.toStringAsFixed(1)}L', style: serif(40)),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(color: C.dark, borderRadius: BorderRadius.circular(24)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('EST. EQUITY', style: mono(9, color: C.lilac)),
-                        Text('${(amt / 125 * 100).toStringAsFixed(1)}%', style: serif(40, color: C.onDark)),
-                      ],
-                    ),
-                  ),
-                ),
+                _sheetStat(Icons.pie_chart_outline_rounded, '${(amt / d.valuation * 100).toStringAsFixed(2)}%', 'equity'),
+                _sheetStat(Icons.account_balance_outlined, '₹${(d.valuation / 100).toStringAsFixed(1)}Cr', 'valuation'),
+                _sheetStat(Icons.description_outlined, 'Equity', 'instrument'),
               ],
             ),
-            Slider(value: amt, min: 0.5, max: 10, divisions: 19, activeColor: _c, onChanged: (v) => setS(() => amt = v)),
-            Text('Illustrative, at a ₹1.25Cr pre-money valuation. Final terms come in the term sheet.', style: sans(12, color: C.muted)),
-            const SizedBox(height: 14),
+            const SizedBox(height: 18),
             PrimaryButton(
-              'Pledge ₹${amt.toStringAsFixed(1)}L',
-              bg: _c,
-              onTap: () {
-                setState(() => d.raised = math.min(d.goal, d.raised + amt));
+              'Back with ₹${amt < 1 ? '${(amt * 100).round()}K' : '${amt.toStringAsFixed(0)}L'}',
+              bg: _blue,
+              fg: Colors.white,
+              onTap: () async {
                 Navigator.of(ctx).pop();
-                toast(context, 'Pledged ₹${amt.toStringAsFixed(1)}L to ${d.name} — founders notified 🚀');
+                HapticFeedback.mediumImpact();
+                setState(() {
+                  if (d.decision == 'backed') d.raised = (d.raised - d.myCheque).clamp(0, d.ask);
+                  d.decision = 'backed';
+                  d.myCheque = amt;
+                  d.raised = (d.raised + amt).clamp(0, d.ask);
+                });
+                Api.decide(d);
+                _stamp.forward(from: 0);
+                _burst.forward(from: 0);
+                await Future.delayed(const Duration(milliseconds: 1100));
+                if (mounted) _goNext();
               },
             ),
           ],
@@ -305,169 +295,576 @@ class _InvestorDealsState extends State<InvestorDeals> with SingleTickerProvider
     );
   }
 
+  Widget _sheetStat(IconData ic, String v, String l) => Expanded(
+    child: Column(
+      children: [
+        Icon(ic, color: C.muted, size: 20),
+        const SizedBox(height: 4),
+        Text(v, style: sans(15, weight: FontWeight.w800)),
+        Text(l, style: sans(11, color: C.muted)),
+      ],
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     final pad = MediaQuery.of(context).padding;
-    final left = deals.length - _top;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(20, pad.top + 12, 20, pad.bottom + 96),
+    final size = MediaQuery.of(context).size;
+    final lo = _p.floor().clamp(0, ideas.length - 1), hi = _p.ceil().clamp(0, ideas.length - 1);
+    final bg = Color.lerp(ideas[lo].color, ideas[hi].color, _p - _p.floor())!;
+    final reviewed = ideas.where((i) => i.decision != null).length;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Color.lerp(bg, Colors.black, 0.45)!, Color.lerp(bg, Colors.black, 0.8)!]),
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DashHeader(role: _inv, a: 'Deal ', b: 'flow.', sub: 'Swipe right to save · left to pass', notes: _notes),
-          const SizedBox(height: 16),
+          SizedBox(height: pad.top + 8),
+          // header: progress
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Text('Deals', style: serif(30, color: Colors.white)),
+                const Spacer(),
+                for (final d in ideas)
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.only(left: 4),
+                    width: d == ideas[_i] ? 18 : 7,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: d.decision == 'backed' ? C.lime : (d.decision == 'passed' ? Colors.white30 : (d == ideas[_i] ? Colors.white : Colors.white54)),
+                    ),
+                  ),
+                const SizedBox(width: 10),
+                Text('$reviewed/${ideas.length}', style: mono(10, color: Colors.white70)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          // cover-flow cards
           Expanded(
-            child: left == 0
-                ? Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+            child: LayoutBuilder(
+              builder: (context, c) {
+                final w = c.maxWidth;
+                final order = [for (var k = 0; k < ideas.length; k++) k]..sort((a, b) => (b - _p).abs().compareTo((a - _p).abs()));
+                return Stack(
+                  children: [
+                    for (final k in order)
+                      if ((k - _p).abs() < 1.6) _card(k, k - _p, w, c.maxHeight),
+                  ],
+                );
+              },
+            ),
+          ),
+          // wheel
+          SizedBox(
+            height: 118,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned.fill(child: CustomPaint(painter: _ArcPainter())),
+                PageView.builder(
+                  controller: _wheel,
+                  itemCount: ideas.length,
+                  itemBuilder: (_, k) {
+                    final d = k - _p;
+                    final ad = d.abs();
+                    final sc = (1 - ad * 0.2).clamp(0.55, 1.0);
+                    return GestureDetector(
+                      onTap: () => _wheel.animateToPage(k, duration: const Duration(milliseconds: 550), curve: Curves.easeInOutCubic),
+                      child: Transform.translate(
+                        offset: Offset(0, ad * ad * 9 + (ad > 0.5 ? 6 : 0)),
+                        child: Transform.rotate(
+                          angle: d * 0.12,
+                          child: Transform.scale(
+                            scale: sc,
+                            child: Opacity(opacity: (1 - ad * 0.25).clamp(0.35, 1), child: _thumb(ideas[k], ad < 0.5)),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: pad.bottom + 76),
+          SizedBox(width: size.width, height: 0),
+        ],
+      ),
+    );
+  }
+
+  Widget _thumb(Idea d, bool center) => Center(
+    child: Stack(
+      clipBehavior: Clip.none,
+      children: [
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          width: 78,
+          height: 78,
+          padding: EdgeInsets.all(center ? 4 : 0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: center ? 3 : 0),
+            boxShadow: center ? [BoxShadow(color: Colors.black.withValues(alpha: 0.35), blurRadius: 18, offset: const Offset(0, 8))] : null,
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [d.color, Color.lerp(d.color, Colors.black, 0.45)!]),
+            ),
+            child: Icon(d.icon, color: Colors.white, size: 30),
+          ),
+        ),
+        if (d.decision != null)
+          Positioned(
+            right: -2,
+            top: -2,
+            child: Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: d.decision == 'backed' ? C.lime : const Color(0xFFE5484D),
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+              child: Icon(d.decision == 'backed' ? Icons.check_rounded : Icons.close_rounded, size: 14, color: d.decision == 'backed' ? C.black : Colors.white),
+            ),
+          ),
+      ],
+    ),
+  );
+
+  Widget _card(int k, double d, double w, double h) {
+    final idea = ideas[k];
+    final ad = d.abs();
+    final isTop = ad < 0.5;
+    final m = Matrix4.identity()
+      ..setEntry(3, 2, 0.0012)
+      ..translateByDouble(d * w * 0.78, ad * 18, 0, 1)
+      ..rotateY(-d * 0.55)
+      ..scaleByDouble(1 - ad * 0.12, 1 - ad * 0.12, 1, 1);
+    return Positioned(
+      left: 14,
+      right: 14,
+      top: 0,
+      bottom: 4,
+      child: IgnorePointer(
+        ignoring: !isTop,
+        child: Opacity(
+          opacity: (1 - ad * 0.55).clamp(0, 1),
+          child: Transform(alignment: Alignment.center, transform: m, child: _cardBody(idea, isTop, h)),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openDetail(Idea d) async {
+    HapticFeedback.selectionClick();
+    await Navigator.of(context).push(fadeRoute(IdeaDetailScreen(idea: d, investor: true)));
+    if (mounted) setState(() {});
+  }
+
+  /// The whole card is tappable — full details open only on tap.
+  Widget _cardBody(Idea d, bool isTop, double h) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: isTop ? () => _openDetail(d) : null,
+        child: _cardInner(d, isTop, h),
+      );
+
+  Widget _cardInner(Idea d, bool isTop, double h) {
+    const stages = ['Idea', 'Pre-seed', 'Seed', 'Series A'];
+    final si = stages.indexOf(d.stage);
+    final artH = (h * 0.42).clamp(150.0, 250.0);
+    return Container(
+      decoration: BoxDecoration(
+        color: C.card,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 30, offset: Offset(0, 18))],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              // art carousel
+              Container(
+                color: darkMode.value ? C.card : const Color(0xFFF7F7F8),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: artH,
+                      child: Stack(
+                        children: [
+                          PageView(
+                            onPageChanged: (pg) => setState(() => _artPage = pg),
+                            children: [
+                              for (var pg = 0; pg < 3; pg++)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 26),
+                                  child: IdeaArt(idea: d, height: artH, page: pg),
+                                ),
+                            ],
+                          ),
+                          Positioned(left: 0, top: 0, child: _circle(Icons.open_in_full_rounded, () => _openDetail(d))),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Column(
+                              children: [
+                                _circle(d.saved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded, () {
+                                  HapticFeedback.selectionClick();
+                                  setState(() => d.saved = !d.saved);
+                                }, filled: d.saved),
+                                const SizedBox(height: 8),
+                                _circle(Icons.ios_share_rounded, () => showShareSheet(context, d.name, 'https://msw.community/i/${d.name.toLowerCase()}')),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('✨', style: TextStyle(fontSize: 48)),
-                        const SizedBox(height: 8),
-                        Text('You’re all caught up', style: serif(32)),
-                        Text('${watchlist.length} ideas in your watchlist', style: sans(14, color: C.muted)),
-                        const SizedBox(height: 16),
-                        PrimaryButton('Start over', bg: _c, icon: false, onTap: () => setState(() => _top = 0)).sized(180),
+                        for (var pg = 0; pg < 3; pg++)
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 3),
+                            width: isTop && pg == _artPage ? 16 : 6,
+                            height: 6,
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(3), color: isTop && pg == _artPage ? _blue : C.line2),
+                          ),
                       ],
                     ),
-                  )
-                : LayoutBuilder(
-                    builder: (context, c) {
-                      return Stack(clipBehavior: Clip.none, children: [for (var i = math.min(deals.length - 1, _top + 2); i >= _top; i--) _card(i, c)]);
-                    },
-                  ),
-          ),
-          const SizedBox(height: 14),
-          if (left > 0)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _round(Icons.close_rounded, const Color(0xFFE5484D), () => _decide(false)),
-                const SizedBox(width: 14),
-                Pressable(
-                  onTap: () => _back(deals[_top]),
-                  child: Container(
-                    height: 62,
-                    padding: const EdgeInsets.symmetric(horizontal: 26),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: _c,
-                      borderRadius: BorderRadius.circular(99),
-                      boxShadow: [BoxShadow(color: _c.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 8))],
-                    ),
-                    child: Text(
-                      'Back idea',
-                      style: sans(15, color: Colors.white, weight: FontWeight.w700),
-                    ),
+                  ],
+                ),
+              ),
+              // info
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 10, 18, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(d.name, style: sans(24, weight: FontWeight.w800, height: 1.1)),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(color: d.color.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(99)),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(d.icon, size: 13, color: d.color),
+                                const SizedBox(width: 4),
+                                Text(
+                                  d.sector,
+                                  style: sans(12, weight: FontWeight.w700, color: d.color),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        d.pitch,
+                        style: sans(14, color: C.muted, height: 1.35),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+                      Row(children: [
+                        Text('Tap for full details', style: sans(12, weight: FontWeight.w700, color: _blue)),
+                        const Icon(Icons.chevron_right_rounded, size: 18, color: _blue),
+                      ]),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          _stat(Icons.people_alt_outlined, fmtNum(d.users)),
+                          _stat(Icons.trending_up_rounded, '+${d.growth.toStringAsFixed(0)}%'),
+                          _stat(Icons.groups_outlined, '${d.founders.length}'),
+                          _stat(Icons.verified_outlined, 'MSW'),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      // stage track
+                      Row(
+                        children: [
+                          for (var x = 0; x < stages.length; x++) ...[
+                            Container(
+                              width: x == si ? 14 : 10,
+                              height: x == si ? 14 : 10,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: x <= si ? _blue : C.line2,
+                                border: x == si ? Border.all(color: _blue.withValues(alpha: 0.3), width: 3) : null,
+                              ),
+                            ),
+                            if (x < stages.length - 1) Expanded(child: Container(height: 2, color: x < si ? _blue : C.line2)),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          for (var x = 0; x < stages.length; x++)
+                            Text(
+                              stages[x],
+                              style: sans(10, weight: x == si ? FontWeight.w800 : FontWeight.w500, color: x == si ? _blue : C.muted),
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 14),
-                _round(Icons.star_rounded, const Color(0xFFE0B400), () => _decide(true)),
-              ],
+              ),
+              // bottom bar
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 10, 12, 12),
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: C.line)),
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 46,
+                      height: 46,
+                      child: TweenAnimationBuilder<double>(
+                        tween: Tween(end: d.raised / d.ask),
+                        duration: const Duration(milliseconds: 900),
+                        curve: Curves.easeOutCubic,
+                        builder: (_, v, _) => Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox.expand(
+                              child: CircularProgressIndicator(value: v, strokeWidth: 4, backgroundColor: C.line2, color: const Color(0xFF14A44D), strokeCap: StrokeCap.round),
+                            ),
+                            Text('${(v * 100).round()}%', style: sans(10, weight: FontWeight.w800)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('₹${d.ask.toStringAsFixed(0)}L', style: sans(20, weight: FontWeight.w800, height: 1.1)),
+                          Text('for ${d.equity.toStringAsFixed(0)}% equity', style: sans(12, color: C.muted)),
+                        ],
+                      ),
+                    ),
+                    if (d.decision != null)
+                      GestureDetector(
+                        onTap: _undo,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          decoration: BoxDecoration(color: C.bg2, borderRadius: BorderRadius.circular(99)),
+                          child: Row(
+                            children: [
+                              Icon(Icons.undo_rounded, size: 16, color: C.ink),
+                              const SizedBox(width: 4),
+                              Text('Undo', style: sans(13, weight: FontWeight.w700)),
+                            ],
+                          ),
+                        ),
+                      )
+                    else ...[
+                      _actionBtn(Icons.close_rounded, const Color(0xFFE5484D), _pass, light: true),
+                      const SizedBox(width: 10),
+                      _actionBtn(Icons.favorite_rounded, _blue, _back, label: 'BACK'),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // decision stamp
+          if (d.decision != null)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: AnimatedBuilder(
+                  animation: _stamp,
+                  builder: (_, _) {
+                    final v = isTop ? Curves.elasticOut.transform(_stamp.value.clamp(0.0, 1.0)) : 1.0;
+                    final backed = d.decision == 'backed';
+                    final c = backed ? const Color(0xFF14A44D) : const Color(0xFFE5484D);
+                    return Align(
+                      alignment: const Alignment(0, -0.35),
+                      child: Transform.rotate(
+                        angle: -0.22,
+                        child: Transform.scale(
+                          scale: _stamp.isAnimating || !isTop ? 2.2 - 1.2 * v : 1,
+                          child: Opacity(
+                            opacity: (v).clamp(0, 1).toDouble(),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: C.card.withValues(alpha: 0.85),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: c, width: 4),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(backed ? Icons.favorite_rounded : Icons.close_rounded, color: c, size: 28),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    backed ? 'BACKED' : 'PASSED',
+                                    style: sans(28, weight: FontWeight.w900, color: c, height: 1),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          // confetti burst
+          if (isTop)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: AnimatedBuilder(
+                  animation: _burst,
+                  builder: (_, _) => CustomPaint(painter: _BurstPainter(_burst.value, d.color)),
+                ),
+              ),
             ),
         ],
       ),
     );
   }
 
-  Widget _round(IconData ic, Color c, VoidCallback onTap) => Pressable(
-    onTap: onTap,
-    scale: 0.85,
+  Widget _stat(IconData ic, String v) => Expanded(
     child: Container(
-      width: 62,
-      height: 62,
-      decoration: BoxDecoration(
-        color: C.card,
-        shape: BoxShape.circle,
-        border: Border.all(color: C.line),
-        boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 16, offset: Offset(0, 6))],
+      margin: const EdgeInsets.only(right: 6),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(color: C.bg2, borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        children: [
+          Icon(ic, size: 17, color: C.ink),
+          const SizedBox(height: 2),
+          Text(v, style: sans(12, weight: FontWeight.w700)),
+        ],
       ),
-      child: Icon(ic, color: c, size: 30),
     ),
   );
 
-  Widget _card(int i, BoxConstraints c) {
-    final depth = i - _top;
-    final isTop = depth == 0;
-    Widget card = _DealCard(deals[i]);
-    if (!isTop) {
-      return Positioned.fill(
-        child: AnimatedScale(
-          duration: const Duration(milliseconds: 300),
-          scale: 1 - depth * 0.05,
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-            offset: Offset(0, depth * -12.0),
-            child: Opacity(opacity: 1 - depth * 0.25, child: card),
-          ),
-        ),
-      );
-    }
-    return Positioned.fill(
-      child: AnimatedBuilder(
-        animation: _fly,
-        builder: (_, child) {
-          final o = _fly.isAnimating ? Offset.lerp(_flyFrom, _flyTo, Curves.easeIn.transform(_fly.value))! : _drag;
-          final likeK = (o.dx / 120).clamp(-1.0, 1.0);
-          return Transform.translate(
-            offset: o,
-            child: Transform.rotate(
-              angle: o.dx / 1400,
-              child: Stack(
-                children: [
-                  child!,
-                  Positioned(
-                    left: 20,
-                    top: 24,
-                    child: Opacity(opacity: likeK.clamp(0.0, 1.0), child: _stamp('SAVE ★', const Color(0xFFE0B400))),
-                  ),
-                  Positioned(
-                    right: 20,
-                    top: 24,
-                    child: Opacity(opacity: (-likeK).clamp(0.0, 1.0), child: _stamp('PASS', const Color(0xFFE5484D))),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-        child: GestureDetector(
-          onPanUpdate: (d) => setState(() => _drag += d.delta),
-          onPanEnd: (d) {
-            if (_drag.dx.abs() > 110 || d.velocity.pixelsPerSecond.dx.abs() > 800) {
-              _decide(_drag.dx > 0);
-            } else {
-              setState(() => _drag = Offset.zero);
-            }
-          },
-          child: card,
-        ),
-      ),
-    );
-  }
-
-  Widget _stamp(String t, Color c) => Transform.rotate(
-    angle: -0.2,
+  Widget _actionBtn(IconData ic, Color c, VoidCallback onTap, {String? label, bool light = false}) => Pressable(
+    onTap: onTap,
+    scale: 0.88,
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      height: 50,
+      padding: EdgeInsets.symmetric(horizontal: label == null ? 0 : 20),
+      width: label == null ? 50 : null,
       decoration: BoxDecoration(
-        border: Border.all(color: c, width: 3),
-        borderRadius: BorderRadius.circular(10),
+        color: light ? c.withValues(alpha: 0.12) : c,
+        borderRadius: BorderRadius.circular(99),
+        boxShadow: light ? null : [BoxShadow(color: c.withValues(alpha: 0.4), blurRadius: 14, offset: const Offset(0, 6))],
       ),
-      child: Text(
-        t,
-        style: sans(20, color: c, weight: FontWeight.w900),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(ic, color: light ? c : Colors.white, size: 22),
+          if (label != null) ...[
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: sans(15, weight: FontWeight.w800, color: Colors.white),
+            ),
+          ],
+        ],
       ),
+    ),
+  );
+
+  Widget _circle(IconData ic, VoidCallback onTap, {bool filled = false}) => GestureDetector(
+    onTap: onTap,
+    child: Container(
+      width: 42,
+      height: 42,
+      decoration: BoxDecoration(
+        color: filled ? const Color(0xFFE9DCCB) : C.card.withValues(alpha: 0.92),
+        shape: BoxShape.circle,
+        boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 10)],
+      ),
+      child: Icon(ic, size: 19, color: filled ? C.black : C.ink),
     ),
   );
 }
 
-class InvestorPortfolio extends StatelessWidget {
+const _blue = Color(0xFF0B5FFF);
+
+/// Faint curved track behind the wheel.
+class _ArcPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size s) {
+    final p = Paint()
+      ..color = Colors.white.withValues(alpha: 0.12)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    final r = Rect.fromCenter(center: Offset(s.width / 2, -s.width * 1.05 + s.height * 0.5), width: s.width * 2.6, height: s.width * 2.6);
+    canvas.drawArc(r, 0.9, 1.34, false, p);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+/// Dots that burst out from the centre when an idea is backed.
+class _BurstPainter extends CustomPainter {
+  _BurstPainter(this.t, this.color);
+  final double t;
+  final Color color;
+  @override
+  void paint(Canvas canvas, Size s) {
+    if (t == 0 || t == 1) return;
+    final c = Offset(s.width / 2, s.height * 0.32);
+    final e = Curves.easeOutCubic.transform(t);
+    final cols = [color, C.lime, const Color(0xFF0B5FFF), C.peach, C.teal];
+    for (var i = 0; i < 36; i++) {
+      final a = i / 36 * 6.283 + i * 0.3;
+      final dist = 40 + e * (120 + (i % 5) * 28);
+      final pos = c + Offset(dist * math.cos(a), dist * math.sin(a) + e * e * 60);
+      canvas.drawCircle(pos, (1 - t) * (3 + i % 3 * 1.5), Paint()..color = cols[i % cols.length].withValues(alpha: 1 - t));
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _BurstPainter old) => old.t != t;
+}
+
+/* ───────────── Portfolio (+ watchlist) ───────────── */
+
+class InvestorPortfolio extends StatefulWidget {
   const InvestorPortfolio({super.key});
-  static const _p = [('Krishi', 2.0, 3.4, 'Seed', 70), ('Ledgerly', 1.5, 2.1, 'Seed', 40), ('Nibble', 0.8, 0.95, 'Pre-seed', 19), ('Hive', 1.0, 0.7, 'Pre-seed', -30)];
+  @override
+  State<InvestorPortfolio> createState() => _InvestorPortfolioState();
+}
+
+class _InvestorPortfolioState extends State<InvestorPortfolio> {
   @override
   Widget build(BuildContext context) {
     final pad = MediaQuery.of(context).padding;
+    final saved = ideas.where((i) => i.saved).toList();
     return ListView(
       padding: EdgeInsets.fromLTRB(20, pad.top + 12, 20, pad.bottom + 110),
       children: [
@@ -483,36 +880,15 @@ class InvestorPortfolio extends StatelessWidget {
           labels: const ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
         ),
         const SectionTitle('Investments'),
-        for (final p in _p)
+        for (final p in holdings)
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Pressable(
-              onTap: () => showSheet(
-                context,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Founder updates', style: mono(10)),
-                    Text(p.$1, style: serif(40)),
-                    const SizedBox(height: 10),
-                    for (final u in const [('NOV 18', 'Crossed a new usage milestone 🎉'), ('OCT 30', 'Hired our first engineer from MSW Careers'), ('OCT 02', 'Closed a pilot with a state agency')])
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Card2(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(u.$1, style: mono(9)),
-                              const SizedBox(height: 4),
-                              Text(u.$2, style: sans(14)),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
+              scale: 0.98,
+              onTap: () {
+                final idea = ideas.where((i) => i.name == p.name).firstOrNull;
+                if (idea != null) Navigator.of(context).push(fadeRoute(IdeaDetailScreen(idea: idea, investor: true)));
+              },
               child: Card2(
                 padding: const EdgeInsets.all(14),
                 child: Row(
@@ -520,30 +896,26 @@ class InvestorPortfolio extends StatelessWidget {
                     Container(
                       width: 44,
                       height: 44,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: (deals.where((d) => d.name == p.$1).firstOrNull?.color ?? C.muted), borderRadius: BorderRadius.circular(14)),
-                      child: Text(
-                        p.$1[0],
-                        style: sans(18, color: Colors.white, weight: FontWeight.w800),
-                      ),
+                      decoration: BoxDecoration(color: ideas.where((d) => d.name == p.name).firstOrNull?.color ?? C.muted, borderRadius: BorderRadius.circular(14)),
+                      child: Icon(ideas.where((d) => d.name == p.name).firstOrNull?.icon ?? Icons.hive_outlined, color: Colors.white, size: 22),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(p.$1, style: sans(15, weight: FontWeight.w600, height: 1.2)),
-                          Text('${p.$4} · invested ₹${p.$2}L', style: sans(12, color: C.muted)),
+                          Text(p.name, style: sans(15, weight: FontWeight.w600, height: 1.2)),
+                          Text('${p.stage} · invested ₹${p.invested}L', style: sans(12, color: C.muted)),
                         ],
                       ),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('₹${p.$3}L', style: serif(24)),
+                        Text('₹${p.value}L', style: serif(24)),
                         Text(
-                          '${p.$5 < 0 ? '↓' : '↑'} ${p.$5.abs()}%',
-                          style: sans(12, weight: FontWeight.w700, color: p.$5 < 0 ? const Color(0xFFE5484D) : C.tealD),
+                          '${p.change < 0 ? '−' : '+'}${p.change.abs()}%',
+                          style: sans(12, weight: FontWeight.w700, color: p.change < 0 ? const Color(0xFFE5484D) : C.tealD),
                         ),
                       ],
                     ),
@@ -552,85 +924,25 @@ class InvestorPortfolio extends StatelessWidget {
               ),
             ),
           ),
-      ],
-    );
-  }
-}
-
-class InvestorEvents extends StatefulWidget {
-  const InvestorEvents({super.key});
-  @override
-  State<InvestorEvents> createState() => _InvestorEventsState();
-}
-
-class _InvestorEventsState extends State<InvestorEvents> {
-  final _going = <int>{};
-  static const _ev = [
-    ('Pitch Day #7', 'Fri, Nov 28 · 5 PM', 'Online · 8 student startups', [Color(0xFF2B2283), Color(0xFF6C5CE7)]),
-    ('Demo Day — HackNova ’26', 'Mar 16 · 3 PM', 'Online · top 10 hackathon teams', [Color(0xFF1B1464), Color(0xFF00D2D3)]),
-    ('Climate Founders Night', 'Apr 21 · 7 PM', 'Bengaluru · in person', [Color(0xFF0F3D2E), Color(0xFF2F8F7A)]),
-  ];
-  @override
-  Widget build(BuildContext context) {
-    final pad = MediaQuery.of(context).padding;
-    return ListView(
-      padding: EdgeInsets.fromLTRB(20, pad.top + 12, 20, pad.bottom + 110),
-      children: [
-        DashHeader(role: _inv, a: 'Pitch ', b: 'days.', notes: _notes),
-        const SizedBox(height: 16),
-        for (var i = 0; i < _ev.length; i++)
-          Reveal(
-            delay: i * 90,
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(20),
-              height: 190,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: _ev[i].$4, begin: Alignment.topLeft, end: Alignment.bottomRight),
-                borderRadius: BorderRadius.circular(26),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(_ev[i].$2.toUpperCase(), style: mono(10, color: Colors.white70)),
-                  const SizedBox(height: 6),
-                  Text(_ev[i].$1, style: serif(34, color: Colors.white, height: 1.05)),
-                  Text(_ev[i].$3, style: sans(13, color: Colors.white70)),
-                  const Spacer(),
-                  Pressable(
-                    onTap: () {
-                      setState(() => _going.contains(i) ? _going.remove(i) : _going.add(i));
-                      if (_going.contains(i)) toast(context, 'Added to your calendar 📅');
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 350),
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                      decoration: BoxDecoration(color: _going.contains(i) ? C.lime : Colors.white, borderRadius: BorderRadius.circular(99)),
-                      child: Text(
-                        _going.contains(i) ? 'Going ✓' : 'RSVP',
-                        style: sans(13, weight: FontWeight.w700, color: C.black),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        const SectionTitle('Watchlist'),
-        for (final d in deals.where((d) => watchlist.contains(d.name)))
+        SectionTitle('Watchlist', action: '${saved.length} saved'),
+        if (saved.isEmpty) Text('Save ideas from Deals with the bookmark button.', style: sans(14, color: C.muted)),
+        for (final d in saved)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: Card2(
-              padding: const EdgeInsets.all(14),
-              child: Row(
-                children: [
-                  const Text('★', style: TextStyle(color: Color(0xFFE0B400), fontSize: 20)),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text('${d.name} — ${d.by}', style: sans(14, weight: FontWeight.w600)),
-                  ),
-                  Tag(d.stage),
-                ],
+            child: Pressable(
+              onTap: () => Navigator.of(context).push(fadeRoute(IdeaDetailScreen(idea: d, investor: true))),
+              child: Card2(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    Icon(Icons.bookmark_rounded, color: C.ink, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text('${d.name} — ${d.founders.first.name}', style: sans(14, weight: FontWeight.w600)),
+                    ),
+                    Tag(d.stage),
+                  ],
+                ),
               ),
             ),
           ),
@@ -655,7 +967,7 @@ class InvestorAccount extends StatelessWidget {
         spacing: 8,
         runSpacing: 8,
         children: [
-          for (final t in const ['EdTech', 'Climate', 'AgriTech', '₹1L – ₹10L tickets', 'Pre-seed & Seed']) Tag(t, bg: C.lilac),
+          for (final t in const ['EdTech', 'Climate', 'AgriTech', '₹50K – ₹10L cheques', 'Pre-seed & Seed']) Tag(t, bg: C.lilac),
         ],
       ),
     ],

@@ -64,7 +64,7 @@ class _PlansScreenState extends State<PlansScreen> {
                     ],
                   ),
                 ),
-                const Text('🪙', style: TextStyle(fontSize: 44)),
+                const Icon(Icons.toll_rounded, size: 44, color: C.black),
               ],
             ),
           ),
@@ -134,7 +134,7 @@ class _PlansScreenState extends State<PlansScreen> {
             Row(
               children: [
                 Expanded(
-                  child: PrimaryButton('Upgrade · ${p.$2}', height: 48, icon: false, bg: dark ? C.teal : C.ink, fg: dark ? C.black : C.onInk, onTap: () => _choose(p.$1, 'Welcome to ${p.$1} 🎉')),
+                  child: PrimaryButton('Upgrade · ${p.$2}', height: 48, icon: false, bg: dark ? C.teal : C.ink, fg: dark ? C.black : C.onInk, onTap: () => _choose(p.$1, 'Welcome to ${p.$1}')),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -146,9 +146,9 @@ class _PlansScreenState extends State<PlansScreen> {
                     fg: fg,
                     onTap: () {
                       if (credits >= p.$4) {
-                        _choose(p.$1, '${p.$1} unlocked with credits 🎉');
+                        _choose(p.$1, '${p.$1} unlocked with credits');
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('You need ${p.$4 - credits} more credits 🔒')));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('You need ${p.$4 - credits} more credits')));
                       }
                     },
                   ),

@@ -1,1 +1,6 @@
 .DS_Store
+app/build/
+app/.dart_tool/
+backend/.venv/
+backend/msw.db
+backend/__pycache__/

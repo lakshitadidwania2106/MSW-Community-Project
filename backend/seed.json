@@ -1,0 +1,1254 @@
+{
+  "users": [
+    {
+      "id": "aanya-sharma",
+      "name": "Aanya Sharma",
+      "role": "student",
+      "college": "IIT Delhi",
+      "course": "B.Tech CSE · 3rd year",
+      "headline": "Full-stack developer · 3× hackathon finalist",
+      "bio": "Building in public. Loves React, ML and good typography.",
+      "skills": [
+        "React",
+        "Python",
+        "Figma",
+        "ML"
+      ],
+      "grad": [
+        4294941302,
+        4291325399
+      ],
+      "level": 14,
+      "iq": 128,
+      "gh": 87,
+      "followers": 1284,
+      "hackathons": 9
+    },
+    {
+      "id": "rohan-kapoor",
+      "name": "Rohan Kapoor",
+      "role": "student",
+      "college": "NIT Trichy",
+      "course": "B.Tech ECE · 3rd year",
+      "headline": "Flutter developer · Intern @ Lumen Labs",
+      "bio": "Mobile apps, IoT and badminton. Shipping one side project a month.",
+      "skills": [
+        "Flutter",
+        "Firebase",
+        "Dart"
+      ],
+      "grad": [
+        4281307002,
+        4288664575
+      ],
+      "level": 11,
+      "iq": 121,
+      "gh": 79,
+      "followers": 920,
+      "hackathons": 5
+    },
+    {
+      "id": "meera-joshi",
+      "name": "Meera Joshi",
+      "role": "student",
+      "college": "IIT Kharagpur",
+      "course": "B.Tech AgE · 4th year",
+      "headline": "Founder, Krishi · AgriTech",
+      "bio": "Building ₹200 soil sensors for small farmers. Backed on MSW.",
+      "skills": [
+        "IoT",
+        "Python",
+        "ML"
+      ],
+      "grad": [
+        4294947722,
+        4291325399
+      ],
+      "level": 17,
+      "iq": 133,
+      "gh": 91,
+      "followers": 2410,
+      "hackathons": 11
+    },
+    {
+      "id": "kabir-nair",
+      "name": "Kabir Nair",
+      "role": "student",
+      "college": "AIIMS Delhi",
+      "course": "MBBS · 3rd year",
+      "headline": "Building Pulse · HealthTech",
+      "bio": "Doctor-in-training writing code for rural clinics.",
+      "skills": [
+        "Python",
+        "NLP"
+      ],
+      "grad": [
+        4285291751,
+        4278244051
+      ],
+      "level": 13,
+      "iq": 126,
+      "gh": 72,
+      "followers": 760,
+      "hackathons": 3
+    },
+    {
+      "id": "sana-khan",
+      "name": "Sana Khan",
+      "role": "student",
+      "college": "BITS Pilani",
+      "course": "B.E. CS · 4th year",
+      "headline": "MSW Labs mentor · TypeScript",
+      "bio": "Teaching Day 15–20 of the full-stack challenge.",
+      "skills": [
+        "TypeScript",
+        "GraphQL",
+        "Node"
+      ],
+      "grad": [
+        4288664575,
+        4285291751
+      ],
+      "level": 15,
+      "iq": 125,
+      "gh": 89,
+      "followers": 3100,
+      "hackathons": 7
+    }
+  ],
+  "posts": [
+    {
+      "author": {
+        "id": "aanya-sharma",
+        "name": "Aanya Sharma",
+        "role": "student",
+        "college": "IIT Delhi",
+        "course": "B.Tech CSE · 3rd year",
+        "headline": "Full-stack developer · 3× hackathon finalist",
+        "bio": "Building in public. Loves React, ML and good typography.",
+        "skills": [
+          "React",
+          "Python",
+          "Figma",
+          "ML"
+        ],
+        "grad": [
+          4294941302,
+          4291325399
+        ],
+        "level": 14,
+        "iq": 128,
+        "gh": 87,
+        "followers": 1284,
+        "hackathons": 9
+      },
+      "time": "2m",
+      "body": "Just shipped my first open-source PR. Thanks MSW Labs Day 21 for the Git deep-dive.",
+      "src": "X",
+      "url": "",
+      "title": "Building in public, week 1",
+      "domain": "x.com",
+      "grad": [
+        4292146539,
+        4286566845
+      ],
+      "likes": 128,
+      "shares": 4,
+      "comments": [
+        {
+          "author": {
+            "id": "rohan-kapoor",
+            "name": "Rohan Kapoor",
+            "role": "student",
+            "college": "NIT Trichy",
+            "course": "B.Tech ECE · 3rd year",
+            "headline": "Flutter developer · Intern @ Lumen Labs",
+            "bio": "Mobile apps, IoT and badminton. Shipping one side project a month.",
+            "skills": [
+              "Flutter",
+              "Firebase",
+              "Dart"
+            ],
+            "grad": [
+              4281307002,
+              4288664575
+            ],
+            "level": 11,
+            "iq": 121,
+            "gh": 79,
+            "followers": 920,
+            "hackathons": 5
+          },
+          "text": "Congrats! Which repo?",
+          "time": "1m",
+          "likes": 3
+        },
+        {
+          "author": {
+            "id": "sana-khan",
+            "name": "Sana Khan",
+            "role": "student",
+            "college": "BITS Pilani",
+            "course": "B.E. CS · 4th year",
+            "headline": "MSW Labs mentor · TypeScript",
+            "bio": "Teaching Day 15–20 of the full-stack challenge.",
+            "skills": [
+              "TypeScript",
+              "GraphQL",
+              "Node"
+            ],
+            "grad": [
+              4288664575,
+              4285291751
+            ],
+            "level": 15,
+            "iq": 125,
+            "gh": 89,
+            "followers": 3100,
+            "hackathons": 7
+          },
+          "text": "Day 21 students are on fire this week.",
+          "time": "30s",
+          "likes": 5
+        }
+      ]
+    },
+    {
+      "author": {
+        "id": "rohan-kapoor",
+        "name": "Rohan Kapoor",
+        "role": "student",
+        "college": "NIT Trichy",
+        "course": "B.Tech ECE · 3rd year",
+        "headline": "Flutter developer · Intern @ Lumen Labs",
+        "bio": "Mobile apps, IoT and badminton. Shipping one side project a month.",
+        "skills": [
+          "Flutter",
+          "Firebase",
+          "Dart"
+        ],
+        "grad": [
+          4281307002,
+          4288664575
+        ],
+        "level": 11,
+        "iq": 121,
+        "gh": 79,
+        "followers": 920,
+        "hackathons": 5
+      },
+      "time": "1h",
+      "body": "Excited to start my internship at Lumen Labs this summer — found it right here on MSW Careers.",
+      "src": "LinkedIn",
+      "url": "",
+      "title": "Rohan joined Lumen Labs",
+      "domain": "linkedin.com",
+      "grad": [
+        4288664575,
+        4278871746
+      ],
+      "likes": 342,
+      "shares": 4,
+      "comments": [
+        {
+          "author": {
+            "id": "meera-joshi",
+            "name": "Meera Joshi",
+            "role": "student",
+            "college": "IIT Kharagpur",
+            "course": "B.Tech AgE · 4th year",
+            "headline": "Founder, Krishi · AgriTech",
+            "bio": "Building ₹200 soil sensors for small farmers. Backed on MSW.",
+            "skills": [
+              "IoT",
+              "Python",
+              "ML"
+            ],
+            "grad": [
+              4294947722,
+              4291325399
+            ],
+            "level": 17,
+            "iq": 133,
+            "gh": 91,
+            "followers": 2410,
+            "hackathons": 11
+          },
+          "text": "Huge! All the best Rohan.",
+          "time": "40m",
+          "likes": 8
+        }
+      ]
+    },
+    {
+      "author": {
+        "id": "meera-joshi",
+        "name": "Meera Joshi",
+        "role": "student",
+        "college": "IIT Kharagpur",
+        "course": "B.Tech AgE · 4th year",
+        "headline": "Founder, Krishi · AgriTech",
+        "bio": "Building ₹200 soil sensors for small farmers. Backed on MSW.",
+        "skills": [
+          "IoT",
+          "Python",
+          "ML"
+        ],
+        "grad": [
+          4294947722,
+          4291325399
+        ],
+        "level": 17,
+        "iq": 133,
+        "gh": 91,
+        "followers": 2410,
+        "hackathons": 11
+      },
+      "time": "3h",
+      "body": "This thread on cracking system design rounds is gold.",
+      "src": "Reddit",
+      "url": "",
+      "title": "How I prepped for SDE interviews",
+      "domain": "reddit.com",
+      "grad": [
+        4294947722,
+        4294919424
+      ],
+      "likes": 96,
+      "shares": 4,
+      "comments": []
+    },
+    {
+      "author": {
+        "id": "kabir-nair",
+        "name": "Kabir Nair",
+        "role": "student",
+        "college": "AIIMS Delhi",
+        "course": "MBBS · 3rd year",
+        "headline": "Building Pulse · HealthTech",
+        "bio": "Doctor-in-training writing code for rural clinics.",
+        "skills": [
+          "Python",
+          "NLP"
+        ],
+        "grad": [
+          4285291751,
+          4278244051
+        ],
+        "level": 13,
+        "iq": 126,
+        "gh": 72,
+        "followers": 760,
+        "hackathons": 3
+      },
+      "time": "5h",
+      "body": "We just crossed 1,000 clinic triages on Pulse. Building in public.",
+      "src": "X",
+      "url": "",
+      "title": "Pulse — week 12 update",
+      "domain": "x.com",
+      "grad": [
+        4285291751,
+        4278244051
+      ],
+      "likes": 211,
+      "shares": 4,
+      "comments": []
+    }
+  ],
+  "events": [
+    {
+      "title": "HackNova ’26",
+      "tagline": "48 hours. AI for Bharat.",
+      "type": "Hackathon",
+      "organiser": "MSW Community × IIT Delhi",
+      "mode": "Online",
+      "venue": "Online · Discord + MSW",
+      "dates": "Mar 14 – 16, 2027",
+      "reg_deadline": "Mar 10, 2027",
+      "base": 4279964772,
+      "blobs": [
+        4285291751,
+        4278244051,
+        4292146539
+      ],
+      "seconds_left": 1052537,
+      "about": "Build AI products that work for the next billion users — in Indian languages, on low-end phones, on patchy networks. Mentors from Kite AI and Lumen Labs.",
+      "prize_pool": "₹5,00,000",
+      "prizes": [
+        [
+          "Winner",
+          "₹2,50,000 + incubation"
+        ],
+        [
+          "1st runner-up",
+          "₹1,50,000"
+        ],
+        [
+          "2nd runner-up",
+          "₹75,000"
+        ],
+        [
+          "Best student team",
+          "₹25,000"
+        ]
+      ],
+      "team_size": "1 – 4 members",
+      "eligibility": [
+        "Open to all college students in India",
+        "Inter-college teams allowed"
+      ],
+      "tracks": [
+        "Language AI",
+        "AgriTech",
+        "HealthTech",
+        "Open innovation"
+      ],
+      "timeline": [
+        [
+          "Registrations close",
+          "Mar 10"
+        ],
+        [
+          "Hacking starts",
+          "Mar 14 · 6 PM"
+        ],
+        [
+          "Mentor check-in",
+          "Mar 15 · 2 PM"
+        ],
+        [
+          "Submissions close",
+          "Mar 16 · 6 PM"
+        ],
+        [
+          "Results",
+          "Mar 20"
+        ]
+      ],
+      "perks": [
+        "Certificates for all",
+        "Swag for finalists",
+        "Internship interviews"
+      ],
+      "seats": 2000,
+      "registered": 1440
+    },
+    {
+      "title": "Design Sprint",
+      "tagline": "UI/UX, 12 hours, one brief.",
+      "type": "Hackathon",
+      "organiser": "IIT Bombay E-Cell",
+      "mode": "In person",
+      "venue": "VMCC, IIT Bombay, Mumbai",
+      "dates": "Apr 02, 2027",
+      "reg_deadline": "Mar 28, 2027",
+      "base": 4294933081,
+      "blobs": [
+        4294955366,
+        4293871471,
+        4294967295
+      ],
+      "seconds_left": 2718480,
+      "about": "A one-day design hackathon. You get the brief at 9 AM and present a clickable prototype by 9 PM.",
+      "prize_pool": "₹1,50,000",
+      "prizes": [
+        [
+          "Winner",
+          "₹75,000"
+        ],
+        [
+          "Runner-up",
+          "₹50,000"
+        ],
+        [
+          "People’s choice",
+          "₹25,000"
+        ]
+      ],
+      "team_size": "Solo",
+      "eligibility": [
+        "Undergraduate & postgraduate students",
+        "Portfolio link required"
+      ],
+      "tracks": [
+        "Mobile",
+        "Accessibility"
+      ],
+      "timeline": [
+        [
+          "Registrations close",
+          "Mar 28"
+        ],
+        [
+          "Brief released",
+          "Apr 02 · 9 AM"
+        ],
+        [
+          "Final pitches",
+          "Apr 02 · 7 PM"
+        ]
+      ],
+      "perks": [
+        "Figma Pro for a year",
+        "Certificates"
+      ],
+      "seats": 200,
+      "registered": 188
+    },
+    {
+      "title": "React Hooks Workshop",
+      "tagline": "Hands-on, 2 hours, live coding.",
+      "type": "Workshop",
+      "organiser": "MSW Labs",
+      "mode": "Online",
+      "venue": "Google Meet",
+      "dates": "Dec 06, 2026 · 6 PM",
+      "reg_deadline": "Dec 06, 2026",
+      "base": 4279188782,
+      "blobs": [
+        4281307002,
+        4292146539,
+        4288664575
+      ],
+      "seconds_left": 263134,
+      "about": "Learn useState, useEffect and custom hooks by building a tiny habit tracker together. Recording shared after.",
+      "prize_pool": "",
+      "prizes": [],
+      "team_size": "Individual",
+      "eligibility": [
+        "Anyone who finished MSW Labs Day 10"
+      ],
+      "tracks": [],
+      "timeline": [
+        [
+          "Live session",
+          "Dec 06 · 6 – 8 PM"
+        ]
+      ],
+      "perks": [
+        "Certificate of participation"
+      ],
+      "seats": 500,
+      "registered": 312
+    },
+    {
+      "title": "Founders Fireside",
+      "tagline": "From dorm room to pre-seed.",
+      "type": "Meetup",
+      "organiser": "IIT Bombay E-Cell",
+      "mode": "In person",
+      "venue": "LH 101, IIT Bombay",
+      "dates": "Dec 12, 2026 · 7 PM",
+      "reg_deadline": "Dec 11, 2026",
+      "base": 4278871746,
+      "blobs": [
+        4288664575,
+        4278244051,
+        4294967295
+      ],
+      "seconds_left": 1572000,
+      "about": "Three student founders backed on MSW talk about their first ₹10L, their first hire and their first mistakes.",
+      "prize_pool": "",
+      "prizes": [],
+      "team_size": "Individual",
+      "eligibility": [
+        "Open to all"
+      ],
+      "tracks": [],
+      "timeline": [
+        [
+          "Doors open",
+          "6:30 PM"
+        ],
+        [
+          "Fireside chat",
+          "7 – 8 PM"
+        ],
+        [
+          "Networking",
+          "8 – 9 PM"
+        ]
+      ],
+      "perks": [],
+      "seats": 150,
+      "registered": 96
+    }
+  ],
+  "opportunities": [
+    {
+      "title": "Frontend Developer Intern",
+      "company": "Lumen Labs",
+      "color": 4294933081,
+      "internship": true,
+      "work_mode": "Remote",
+      "location": "Bengaluru (Remote)",
+      "pay": "₹40,000 / month",
+      "duration": "3 months",
+      "start_date": "Jan 05, 2027",
+      "apply_by": "Dec 15, 2026",
+      "openings": 3,
+      "experience": "Freshers welcome",
+      "skills": [
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "Git"
+      ],
+      "eligibility": [
+        "B.Tech / B.E. / BCA / MCA",
+        "Batch 2026, 2027, 2028",
+        "MSW Level 8 or above"
+      ],
+      "about": "Join the product team building Lumen’s design-to-code platform used by 40k designers. You’ll ship real features to production from week one.",
+      "responsibilities": [
+        "Build responsive UI components in React + TypeScript",
+        "Turn Figma designs into pixel-perfect pages",
+        "Write tests and review pull requests",
+        "Improve Core Web Vitals across the app"
+      ],
+      "perks": [
+        "Certificate",
+        "Pre-placement offer",
+        "Flexible hours",
+        "Letter of recommendation"
+      ],
+      "rounds": [
+        "Profile screening (MSW ID)",
+        "Take-home task (48 hours)",
+        "Technical interview",
+        "Culture-fit chat"
+      ],
+      "about_company": "Lumen Labs is a Series A design-tooling startup with 60 people across Bengaluru and Berlin.",
+      "applicants": 128,
+      "views": 2140,
+      "live": true
+    },
+    {
+      "title": "ML Research Intern",
+      "company": "Kite AI",
+      "color": 4282090230,
+      "internship": true,
+      "work_mode": "On-site",
+      "location": "Bengaluru",
+      "pay": "₹55,000 / month",
+      "duration": "6 months",
+      "start_date": "Feb 01, 2027",
+      "apply_by": "Dec 22, 2026",
+      "openings": 2,
+      "experience": "Research projects preferred",
+      "skills": [
+        "Python",
+        "PyTorch",
+        "NLP",
+        "Statistics"
+      ],
+      "eligibility": [
+        "B.Tech / M.Tech / Dual degree",
+        "Batch 2026, 2027",
+        "Strong maths background"
+      ],
+      "about": "Work with Kite’s research team on small language models for Indian languages.",
+      "responsibilities": [
+        "Run training experiments and ablations",
+        "Curate and clean multilingual datasets",
+        "Write internal research notes"
+      ],
+      "perks": [
+        "Certificate",
+        "Pre-placement offer",
+        "GPU credits",
+        "Free meals"
+      ],
+      "rounds": [
+        "Profile screening",
+        "ML assignment",
+        "Two technical interviews"
+      ],
+      "about_company": "Kite AI builds language models for Bharat. Backed by top Indian VCs.",
+      "applicants": 86,
+      "views": 1620,
+      "live": true
+    },
+    {
+      "title": "Product Designer",
+      "company": "Parallax",
+      "color": 4279308561,
+      "internship": false,
+      "work_mode": "Hybrid",
+      "location": "Mumbai",
+      "pay": "₹10 – 14 LPA",
+      "duration": "Full-time",
+      "start_date": "Immediate",
+      "apply_by": "Dec 30, 2026",
+      "openings": 1,
+      "experience": "0 – 2 years",
+      "skills": [
+        "Figma",
+        "Design systems",
+        "Prototyping",
+        "User research"
+      ],
+      "eligibility": [
+        "Any degree",
+        "Portfolio required"
+      ],
+      "about": "Own end-to-end design for Parallax’s creator analytics app.",
+      "responsibilities": [
+        "Design flows from research to hi-fi",
+        "Maintain the design system",
+        "Run usability tests every sprint"
+      ],
+      "perks": [
+        "Health insurance",
+        "Learning budget",
+        "Flexible hours"
+      ],
+      "rounds": [
+        "Portfolio review",
+        "Design challenge",
+        "Founder interview"
+      ],
+      "about_company": "Parallax helps 20k creators understand their audience.",
+      "applicants": 42,
+      "views": 980,
+      "live": true
+    },
+    {
+      "title": "SDE I — Backend",
+      "company": "Kite AI",
+      "color": 4282090230,
+      "internship": false,
+      "work_mode": "On-site",
+      "location": "Bengaluru",
+      "pay": "₹16 – 20 LPA",
+      "duration": "Full-time",
+      "start_date": "Jul 2027",
+      "apply_by": "Jan 10, 2027",
+      "openings": 4,
+      "experience": "Freshers (2027 batch)",
+      "skills": [
+        "Go",
+        "PostgreSQL",
+        "Kubernetes",
+        "System design"
+      ],
+      "eligibility": [
+        "B.Tech / B.E. CS / IT / ECE",
+        "Batch 2027",
+        "CGPA 7.0+"
+      ],
+      "about": "Build the inference platform that serves Kite’s models to millions of users.",
+      "responsibilities": [
+        "Design and build APIs in Go",
+        "Own services end-to-end in production",
+        "Participate in on-call rotations"
+      ],
+      "perks": [
+        "Joining bonus",
+        "Health insurance",
+        "ESOPs"
+      ],
+      "rounds": [
+        "Online assessment",
+        "Two technical rounds",
+        "Hiring manager round"
+      ],
+      "about_company": "",
+      "applicants": 312,
+      "views": 4100,
+      "live": true
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Fix checkout bug on mobile web",
+      "company": "Lumen Labs",
+      "color": 4294933081,
+      "reward": 3000,
+      "days": 3,
+      "level": 2,
+      "stack": [
+        "JavaScript",
+        "React",
+        "Debugging"
+      ],
+      "repo": "github.com/lumen-labs/storefront",
+      "description": "On iOS Safari the “Pay now” button jumps under the keyboard and the order is submitted twice. Find the root cause and fix it without breaking desktop.",
+      "deliverables": [
+        "Pull request against the main branch",
+        "Short Loom or screenshots showing the fix on iOS",
+        "Note explaining the root cause"
+      ],
+      "acceptance": [
+        "No double submission on iOS Safari & Chrome",
+        "All existing tests pass",
+        "No layout shift on desktop"
+      ],
+      "submissions": [
+        {
+          "student": {
+            "id": "sana-khan",
+            "name": "Sana Khan",
+            "role": "student",
+            "college": "BITS Pilani",
+            "course": "B.E. CS · 4th year",
+            "headline": "MSW Labs mentor · TypeScript",
+            "bio": "Teaching Day 15–20 of the full-stack challenge.",
+            "skills": [
+              "TypeScript",
+              "GraphQL",
+              "Node"
+            ],
+            "grad": [
+              4288664575,
+              4285291751
+            ],
+            "level": 15,
+            "iq": 125,
+            "gh": 89,
+            "followers": 3100,
+            "hackathons": 7
+          },
+          "repo": "github.com/sana-k/storefront/pull/42",
+          "demo": "storefront-fix.vercel.app",
+          "notes": "Root cause was a duplicate onSubmit on the form and the button. Added a disabled state while the request is in flight.",
+          "shots": [
+            3,
+            7,
+            9
+          ],
+          "status": "In review"
+        }
+      ]
+    },
+    {
+      "title": "Accessibility audit of dashboard",
+      "company": "Lumen Labs",
+      "color": 4294933081,
+      "reward": 4500,
+      "days": 5,
+      "level": 2,
+      "stack": [
+        "Accessibility",
+        "Figma",
+        "WCAG"
+      ],
+      "repo": "github.com/lumen-labs/dashboard",
+      "description": "Audit the analytics dashboard against WCAG 2.2 AA and fix the top 10 issues.",
+      "deliverables": [
+        "Audit report (Figma or Notion)",
+        "PR fixing at least 10 issues"
+      ],
+      "acceptance": [
+        "Lighthouse accessibility score ≥ 95",
+        "Keyboard-only navigation works everywhere"
+      ],
+      "submissions": [
+        {
+          "student": {
+            "id": "rohan-kapoor",
+            "name": "Rohan Kapoor",
+            "role": "student",
+            "college": "NIT Trichy",
+            "course": "B.Tech ECE · 3rd year",
+            "headline": "Flutter developer · Intern @ Lumen Labs",
+            "bio": "Mobile apps, IoT and badminton. Shipping one side project a month.",
+            "skills": [
+              "Flutter",
+              "Firebase",
+              "Dart"
+            ],
+            "grad": [
+              4281307002,
+              4288664575
+            ],
+            "level": 11,
+            "iq": 121,
+            "gh": 79,
+            "followers": 920,
+            "hackathons": 5
+          },
+          "repo": "github.com/rohan-k/dashboard/pull/7",
+          "demo": "figma.com/file/a11y-audit",
+          "notes": "Fixed contrast on 14 components, added focus rings and skip links.",
+          "shots": [
+            12,
+            15
+          ],
+          "status": "In review"
+        }
+      ]
+    },
+    {
+      "title": "Clean 10k rows of survey data",
+      "company": "Kite AI",
+      "color": 4282090230,
+      "reward": 2200,
+      "days": 5,
+      "level": 1,
+      "stack": [
+        "Python",
+        "Pandas"
+      ],
+      "repo": "github.com/kite-ai/survey-cleaning",
+      "description": "Deduplicate, normalise and label 10k rows of multilingual survey responses.",
+      "deliverables": [
+        "Cleaned CSV",
+        "Notebook with the cleaning steps"
+      ],
+      "acceptance": [
+        "No duplicate respondents",
+        "Language column filled for every row"
+      ],
+      "submissions": []
+    },
+    {
+      "title": "Build a Flutter onboarding flow",
+      "company": "Parallax",
+      "color": 4279308561,
+      "reward": 6000,
+      "days": 7,
+      "level": 3,
+      "stack": [
+        "Flutter",
+        "Dart",
+        "UI"
+      ],
+      "repo": "github.com/parallax-hq/creator-app",
+      "description": "Build the 3-screen onboarding from our Figma file with animations and form validation.",
+      "deliverables": [
+        "PR with the onboarding module",
+        "Screen recording on Android & iOS"
+      ],
+      "acceptance": [
+        "Matches Figma within 4 px",
+        "60 fps transitions",
+        "Unit tests for validation"
+      ],
+      "submissions": []
+    }
+  ],
+  "ideas": [
+    {
+      "name": "Krishi",
+      "pitch": "Soil health reports from a ₹200 sensor, delivered over SMS.",
+      "sector": "AgriTech",
+      "stage": "Seed",
+      "icon": "grass",
+      "color": 4281307002,
+      "founders": [
+        [
+          "Meera Joshi",
+          "CEO · hardware",
+          "IIT Kharagpur"
+        ],
+        [
+          "Varun Tiwari",
+          "CTO · firmware",
+          "IIT Kharagpur"
+        ]
+      ],
+      "problem": "86% of Indian farmers are smallholders who over-use fertiliser because soil tests cost ₹1,500 and take weeks.",
+      "solution": "A ₹200 probe that reads NPK and moisture, plus SMS advice in 9 languages. Works without a smartphone.",
+      "users": 1840,
+      "growth": 38.0,
+      "revenue": "₹1.2L MRR",
+      "market": "₹4,800 Cr soil-testing market (India)",
+      "model": "Sensor sale ₹200 + ₹49/season advisory subscription",
+      "ask": 10.0,
+      "equity": 8.0,
+      "raised": 7.8,
+      "min_ticket": 0.5,
+      "use_of_funds": [
+        [
+          "Manufacturing",
+          40
+        ],
+        [
+          "Field team",
+          30
+        ],
+        [
+          "Product",
+          20
+        ],
+        [
+          "Ops & legal",
+          10
+        ]
+      ],
+      "milestones": [
+        "10,000 farmers by Sep 2027",
+        "Pilot with Maharashtra agri dept",
+        "Break-even in 18 months"
+      ],
+      "spark": [
+        2.0,
+        3.0,
+        5.0,
+        6.0,
+        9.0,
+        12.0,
+        15.0,
+        21.0
+      ]
+    },
+    {
+      "name": "Nibble",
+      "pitch": "Exam prep in 5-minute bites, built for the commute.",
+      "sector": "EdTech",
+      "stage": "Pre-seed",
+      "icon": "book",
+      "color": 4285291751,
+      "founders": [
+        [
+          "Arjun Rao",
+          "CEO · product",
+          "DTU"
+        ],
+        [
+          "Sana Khan",
+          "CTO",
+          "BITS Pilani"
+        ]
+      ],
+      "problem": "Students preparing for competitive exams lose 2+ hours a day commuting and can’t study on long-form apps.",
+      "solution": "Swipeable 5-minute lessons with spaced repetition and offline mode.",
+      "users": 12400,
+      "growth": 52.0,
+      "revenue": "₹40k MRR",
+      "market": "₹58,000 Cr test-prep market",
+      "model": "Freemium · ₹99/month for full syllabus",
+      "ask": 5.0,
+      "equity": 6.0,
+      "raised": 2.3,
+      "min_ticket": 0.25,
+      "use_of_funds": [
+        [
+          "Content",
+          45
+        ],
+        [
+          "Marketing",
+          30
+        ],
+        [
+          "Engineering",
+          25
+        ]
+      ],
+      "milestones": [
+        "50,000 learners",
+        "Launch Hindi & Tamil",
+        "B2B with 10 coaching centres"
+      ],
+      "spark": [
+        3.0,
+        4.0,
+        4.0,
+        7.0,
+        8.0,
+        11.0,
+        14.0,
+        19.0
+      ]
+    },
+    {
+      "name": "Pulse",
+      "pitch": "AI triage for rural clinics, in the patient’s language.",
+      "sector": "HealthTech",
+      "stage": "Idea",
+      "icon": "heart",
+      "color": 4293419327,
+      "founders": [
+        [
+          "Kabir Nair",
+          "CEO · clinician",
+          "AIIMS Delhi"
+        ]
+      ],
+      "problem": "One doctor sees 80+ patients a day in rural PHCs; triage is done by hand on paper.",
+      "solution": "A voice-first triage assistant that prioritises patients and pre-fills case sheets.",
+      "users": 1020,
+      "growth": 45.0,
+      "revenue": "Pre-revenue",
+      "market": "25,000 PHCs across India",
+      "model": "Per-clinic SaaS · ₹2,000/month",
+      "ask": 5.0,
+      "equity": 10.0,
+      "raised": 1.1,
+      "min_ticket": 0.5,
+      "use_of_funds": [
+        [
+          "Clinical pilots",
+          50
+        ],
+        [
+          "Engineering",
+          35
+        ],
+        [
+          "Compliance",
+          15
+        ]
+      ],
+      "milestones": [
+        "Pilot in 20 clinics",
+        "CDSCO pathway started"
+      ],
+      "spark": [
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        3.0,
+        5.0,
+        6.0,
+        9.0
+      ]
+    },
+    {
+      "name": "Ledgerly",
+      "pitch": "UPI bookkeeping for kirana stores — zero typing.",
+      "sector": "FinTech",
+      "stage": "Seed",
+      "icon": "wallet",
+      "color": 4278871746,
+      "founders": [
+        [
+          "Rhea Pillai",
+          "CEO",
+          "IIIT Hyderabad"
+        ],
+        [
+          "Dev Shah",
+          "Engineering",
+          "VIT"
+        ]
+      ],
+      "problem": "Kirana owners get 300+ UPI payments a day and still keep a paper ledger.",
+      "solution": "Auto-reconciles UPI payments, credit (udhaar) and stock into a daily WhatsApp summary.",
+      "users": 3300,
+      "growth": 27.0,
+      "revenue": "₹2.6L MRR",
+      "market": "1.3 Cr kirana stores",
+      "model": "₹149/month subscription",
+      "ask": 15.0,
+      "equity": 7.0,
+      "raised": 6.4,
+      "min_ticket": 1.0,
+      "use_of_funds": [
+        [
+          "Sales",
+          40
+        ],
+        [
+          "Engineering",
+          35
+        ],
+        [
+          "Support",
+          25
+        ]
+      ],
+      "milestones": [
+        "10,000 paying stores",
+        "Lending partnership"
+      ],
+      "spark": [
+        4.0,
+        5.0,
+        7.0,
+        8.0,
+        8.0,
+        10.0,
+        13.0,
+        16.0
+      ]
+    },
+    {
+      "name": "Volt",
+      "pitch": "Battery swapping stations for e-rickshaws.",
+      "sector": "Climate",
+      "stage": "Idea",
+      "icon": "bolt",
+      "color": 4291208192,
+      "founders": [
+        [
+          "Ishaan Mehta",
+          "CEO",
+          "IIT Delhi"
+        ]
+      ],
+      "problem": "E-rickshaw drivers lose 4 hours a day charging lead-acid batteries.",
+      "solution": "Swap a charged lithium pack in 2 minutes at neighbourhood kiosks.",
+      "users": 140,
+      "growth": 60.0,
+      "revenue": "₹18k MRR",
+      "market": "20 lakh e-rickshaws in India",
+      "model": "Per-swap fee ₹60",
+      "ask": 8.0,
+      "equity": 12.0,
+      "raised": 0.4,
+      "min_ticket": 0.5,
+      "use_of_funds": [
+        [
+          "Batteries",
+          55
+        ],
+        [
+          "Kiosks",
+          30
+        ],
+        [
+          "Team",
+          15
+        ]
+      ],
+      "milestones": [
+        "10 kiosks in East Delhi",
+        "500 daily swaps"
+      ],
+      "spark": [
+        1.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        3.0,
+        3.0,
+        4.0
+      ]
+    }
+  ],
+  "announcements": [
+    {
+      "title": "E-Summit 2027 dates are out",
+      "body": "Asia’s largest student-run entrepreneurship summit is back on Jan 18 – 19. Hackathon, startup expo and 40+ speakers.",
+      "organiser": "IIT Bombay E-Cell",
+      "time": "2h",
+      "category": "Event",
+      "link": "",
+      "pinned": true
+    },
+    {
+      "title": "Design Sprint registrations close Mar 28",
+      "body": "Solo designers only. Bring a portfolio link — shortlist is announced on Mar 30.",
+      "organiser": "IIT Bombay E-Cell",
+      "time": "1d",
+      "category": "Deadline",
+      "link": "",
+      "pinned": false
+    },
+    {
+      "title": "Mentor office hours every Friday",
+      "body": "Book a 20-minute slot with founders from our alumni network. Open to all MSW students.",
+      "organiser": "IIT Bombay E-Cell",
+      "time": "3d",
+      "category": "Opportunity",
+      "link": "msw.community/iitb/office-hours",
+      "pinned": false
+    }
+  ]
+}

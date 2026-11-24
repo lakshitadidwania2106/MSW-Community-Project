@@ -263,7 +263,7 @@ class _BlobsState extends State<Blobs> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => RepaintBoundary(
-    child: CustomPaint(painter: _BlobPainter(_c, widget), size: Size.infinite),
+    child: ClipRect(child: CustomPaint(painter: _BlobPainter(_c, widget), size: Size.infinite)),
   );
 }
 

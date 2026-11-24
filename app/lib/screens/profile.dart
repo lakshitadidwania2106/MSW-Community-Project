@@ -8,7 +8,10 @@ import '../theme.dart';
 import '../widgets/scene.dart';
 import '../widgets/ui.dart';
 import 'onboarding.dart';
+import 'courses.dart';
+import 'games.dart';
 import 'pitch.dart';
+import 'quiz.dart';
 import 'plans.dart';
 import 'resume.dart';
 
@@ -87,20 +90,21 @@ class ProfileScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: Column(
               children: [
-                _row(Icons.edit_rounded, 'Edit profile', 'Name, college, skills'),
-                _row(Icons.workspace_premium_rounded, 'Certificates', 'MSW Labs · 2 earned'),
-                _row(Icons.description_rounded, 'Resume', 'Auto-built from your ID · ATS 92', onTap: () => Navigator.of(context).push(fadeRoute(const ResumeScreen()))),
-                _row(Icons.lightbulb_rounded, 'My business ideas', 'Krishi Lite · validation 82', onTap: () => Navigator.of(context).push(fadeRoute(const PitchScreen()))),
-                _row(Icons.workspace_premium_rounded, 'Credits & plans', '2,450 credits · Starter', onTap: () => Navigator.of(context).push(fadeRoute(const PlansScreen()))),
-                _row(Icons.task_alt_rounded, 'My tasks & applications', '3 active'),
+                _row(Icons.edit_outlined, 'Edit profile', 'Name, college, skills'),
+                _row(Icons.school_outlined, 'Courses · Day 1–30', 'Full Stack Web Development', onTap: () => Navigator.of(context).push(fadeRoute(const CoursesScreen()))),
+                _row(Icons.psychology_outlined, 'Quizzes, IQ & reasoning', 'Scores show up on your ID', onTap: () => Navigator.of(context).push(fadeRoute(const QuizScreen(title: 'IQ test')))),
+                _row(Icons.sports_esports_outlined, 'Games', 'Play and earn credits', onTap: () => Navigator.of(context).push(fadeRoute(const GamesScreen()))),
+                _row(Icons.military_tech_outlined, 'Badges', '4 of 6 earned', onTap: () => _badges(context)),
+                _row(Icons.description_outlined, 'Resume', 'Auto-built from your ID · ATS 92', onTap: () => Navigator.of(context).push(fadeRoute(const ResumeScreen()))),
+                _row(Icons.lightbulb_outline_rounded, 'My business ideas', 'Pitch, validate, get funded', onTap: () => Navigator.of(context).push(fadeRoute(const PitchScreen()))),
+                _row(Icons.workspace_premium_outlined, 'Credits & plans', '2,450 credits · Starter', onTap: () => Navigator.of(context).push(fadeRoute(const PlansScreen()))),
                 _row(
-                  Icons.swap_horiz_rounded,
-                  'Switch portal',
-                  'Student · Company · Investor · College · Admin',
-                  onTap: () => Navigator.of(context).pushAndRemoveUntil(fadeRoute(const OnboardingScreen()), (_) => false),
+                  darkMode.value ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+                  'Appearance',
+                  darkMode.value ? 'Dark mode · tap for light' : 'Light mode · tap for dark',
+                  onTap: toggleTheme,
                 ),
-                _row(darkMode.value ? Icons.dark_mode_rounded : Icons.light_mode_rounded, 'Appearance', darkMode.value ? 'Dark mode · tap for light' : 'Light mode · tap for dark', onTap: toggleTheme),
-                _row(Icons.settings_rounded, 'Settings', 'Notifications, privacy', last: true),
+                _row(Icons.logout_rounded, 'Log out', 'See you soon', last: true, onTap: () => Navigator.of(context).pushAndRemoveUntil(fadeRoute(const OnboardingScreen()), (_) => false)),
               ],
             ),
           ),
@@ -108,6 +112,51 @@ class ProfileScreen extends StatelessWidget {
       ],
     );
   }
+
+  void _badges(BuildContext context) => showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (ctx) => Container(
+      padding: EdgeInsets.fromLTRB(20, 18, 20, MediaQuery.of(ctx).padding.bottom + 20),
+      decoration: BoxDecoration(
+        color: C.paper,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Badges', style: serif(34)),
+          const SizedBox(height: 14),
+          GridView.count(
+            crossAxisCount: 3,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            children: [
+              for (final b in badges)
+                Container(
+                  decoration: BoxDecoration(color: b.earned ? C.black : C.bg2, borderRadius: BorderRadius.circular(20)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(b.earned ? b.icon : Icons.lock_outline_rounded, size: 30, color: b.earned ? C.lime : C.muted),
+                      const SizedBox(height: 8),
+                      Text(
+                        b.name,
+                        textAlign: TextAlign.center,
+                        style: sans(11, weight: FontWeight.w600, color: b.earned ? Colors.white : C.muted, height: 1.2),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 
   Widget _row(IconData ic, String t, String s, {VoidCallback? onTap, bool last = false}) => Pressable(
     onTap: onTap,
@@ -249,7 +298,7 @@ class _IdCardState extends State<IdCard> with TickerProviderStateMixin {
                   children: [
                     const Logo(light: true, height: 26),
                     const Spacer(),
-                    Text('STUDENT · VERIFIED ✓', style: mono(9, color: Colors.white70)),
+                    Text('STUDENT · VERIFIED', style: mono(9, color: Colors.white70)),
                   ],
                 ),
                 const SizedBox(height: 20),

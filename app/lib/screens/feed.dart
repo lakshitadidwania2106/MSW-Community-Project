@@ -1,11 +1,12 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
+import '../api.dart';
 import '../data.dart';
+import 'stories.dart';
 import '../theme.dart';
 import '../widgets/scene.dart';
 import '../widgets/ui.dart';
+import 'post.dart';
 
 /// Home feed: stories, "paste a link → get a post" composer, posts.
 class FeedScreen extends StatefulWidget {
@@ -17,13 +18,12 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  static const _stories = ['MSW Labs', 'HackNova', 'Design', 'Climate', 'FinTech', 'Meetups'];
-
-  void _openComposer() async {
-    final post = await showModalBottomSheet<Post>(context: context, isScrollControlled: true, backgroundColor: Colors.transparent, builder: (_) => const _PasteSheet());
+  Future<void> _openComposer() async {
+    final post = await showModalBottomSheet<Post>(context: context, isScrollControlled: true, backgroundColor: Colors.transparent, builder: (_) => const PasteSheet());
     if (post != null) {
       setState(() => posts.insert(0, post));
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Posted to the community ✓')));
+      Api.createPost(post);
+      if (mounted) snack(context, 'Posted to the community');
     }
   }
 
@@ -70,7 +70,7 @@ class _FeedScreenState extends State<FeedScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${greet.toUpperCase()}, AANYA', style: mono(11)),
+                Text('${greet.toUpperCase()}, ${me.name.split(' ').first.toUpperCase()}', style: mono(11)),
                 const SizedBox(height: 6),
                 const Headline('What are you ', 'building today?', size: 40),
               ],
@@ -78,16 +78,7 @@ class _FeedScreenState extends State<FeedScreen> {
           ),
         ),
         const SizedBox(height: 18),
-        SizedBox(
-          height: 92,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: _stories.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 14),
-            itemBuilder: (_, i) => Reveal(delay: 100 + i * 60, offset: 14, child: _story(i)),
-          ),
-        ),
+        const Reveal(delay: 100, offset: 14, child: StoryRow()),
         const SizedBox(height: 14),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -111,56 +102,15 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
-  Widget _iconBtn(IconData ic) => Pressable(
-    child: Container(
-      width: 42,
-      height: 42,
-      decoration: BoxDecoration(
-        color: C.paper,
-        shape: BoxShape.circle,
-        border: Border.all(color: C.line),
-      ),
-      child: Icon(ic, size: 20),
+  Widget _iconBtn(IconData ic) => Container(
+    width: 42,
+    height: 42,
+    decoration: BoxDecoration(
+      color: C.paper,
+      shape: BoxShape.circle,
+      border: Border.all(color: C.line),
     ),
-  );
-
-  Widget _story(int i) => Pressable(
-    onTap: i == 0 ? widget.onOpenReels : null,
-    child: Column(
-      children: [
-        Container(
-          width: 64,
-          height: 64,
-          padding: const EdgeInsets.all(2.5),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: SweepGradient(colors: i == 0 ? const [C.teal, C.lime, C.teal] : const [Color(0xFFFF7AD9), C.peach, C.lime, Color(0xFFFF7AD9)]),
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(2.5),
-            decoration: BoxDecoration(color: C.bg, shape: BoxShape.circle),
-            child: ClipOval(
-              child: i == 0
-                  ? Container(
-                      color: C.ink,
-                      alignment: Alignment.center,
-                      child: Text('M.', style: serif(26, color: C.teal)),
-                    )
-                  : Image.network(
-                      photo(i + 3, w: 160, h: 160),
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => Container(color: C.bg2),
-                    ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          _stories[i],
-          style: sans(11, color: C.ink2, weight: FontWeight.w500),
-        ),
-      ],
-    ),
+    child: Icon(ic, size: 20, color: C.ink),
   );
 
   Widget _composer() => Pressable(
@@ -174,7 +124,7 @@ class _FeedScreenState extends State<FeedScreen> {
       ),
       child: Row(
         children: [
-          const GAvatar('AS', size: 38),
+          GAvatar(me.initials, size: 38, colors: me.grad),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -190,7 +140,7 @@ class _FeedScreenState extends State<FeedScreen> {
             decoration: BoxDecoration(color: C.ink, borderRadius: BorderRadius.circular(12)),
             child: Row(
               children: [
-                const Icon(Icons.link_rounded, color: C.teal, size: 16),
+                Icon(Icons.link_rounded, color: C.onInk, size: 16),
                 const SizedBox(width: 6),
                 Text(
                   'Paste',
@@ -234,7 +184,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   width: 48,
                   height: 48,
                   decoration: const BoxDecoration(color: C.lime, shape: BoxShape.circle),
-                  child: Icon(Icons.play_arrow_rounded, color: C.black, size: 28),
+                  child: const Icon(Icons.play_arrow_rounded, color: C.black, size: 28),
                 ),
               ],
             ),
@@ -245,179 +195,16 @@ class _FeedScreenState extends State<FeedScreen> {
   );
 }
 
-/// A post with double-tap-to-like heart burst and an animated like button.
-class PostCard extends StatefulWidget {
-  const PostCard({super.key, required this.post});
-  final Post post;
-  @override
-  State<PostCard> createState() => _PostCardState();
-}
-
-class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin {
-  late final AnimationController _burst = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-
-  void _like({bool force = false}) {
-    final p = widget.post;
-    setState(() {
-      if (force && p.liked) return;
-      p.liked = !p.liked;
-      p.likes += p.liked ? 1 : -1;
-    });
-  }
-
-  @override
-  void dispose() {
-    _burst.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final p = widget.post;
-    return GestureDetector(
-      onDoubleTap: () {
-        _like(force: true);
-        _burst.forward(from: 0);
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: C.card,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: C.line),
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    GAvatar(
-                      p.initials,
-                      size: 40,
-                      colors: p.initials == 'RK' ? const [C.tealD, C.sky] : (p.initials == 'MJ' ? const [C.peach, Color(0xFFC86DD7)] : const [Color(0xFFFF9A76), Color(0xFFC86DD7)]),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(p.name, style: sans(14, weight: FontWeight.w600, height: 1.2)),
-                          Text(p.meta, style: sans(12, color: C.muted, height: 1.3)),
-                        ],
-                      ),
-                    ),
-                    Tag(p.src, bg: srcColor(p.src), fg: Colors.white),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(p.body, style: sans(15, height: 1.45)),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(color: C.bg, borderRadius: BorderRadius.circular(14)),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 64,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(9),
-                          gradient: LinearGradient(colors: p.grad),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              p.title,
-                              style: sans(14, weight: FontWeight.w600, height: 1.25),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(p.domain, style: mono(10)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: _like,
-                      child: Row(
-                        children: [
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            transitionBuilder: (c, a) => ScaleTransition(
-                              scale: CurvedAnimation(parent: a, curve: Curves.elasticOut),
-                              child: c,
-                            ),
-                            child: Icon(p.liked ? Icons.favorite_rounded : Icons.favorite_border_rounded, key: ValueKey(p.liked), size: 20, color: p.liked ? const Color(0xFFE0245E) : C.muted),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            '${p.likes}',
-                            style: sans(13, color: p.liked ? const Color(0xFFE0245E) : C.muted, weight: FontWeight.w500),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 18),
-                    Icon(Icons.mode_comment_outlined, size: 18, color: C.muted),
-                    const SizedBox(width: 5),
-                    Text('${p.comments}', style: sans(13, color: C.muted)),
-                    const SizedBox(width: 18),
-                    Icon(Icons.ios_share_rounded, size: 18, color: C.muted),
-                    const Spacer(),
-                    Icon(Icons.bookmark_border_rounded, size: 20, color: C.muted),
-                  ],
-                ),
-              ],
-            ),
-            Positioned.fill(
-              child: IgnorePointer(
-                child: AnimatedBuilder(
-                  animation: _burst,
-                  builder: (_, _) {
-                    final v = _burst.value;
-                    if (v == 0 || v == 1) return const SizedBox.shrink();
-                    final s = Curves.elasticOut.transform(math.min(1, v * 1.6));
-                    return Center(
-                      child: Opacity(
-                        opacity: (1 - math.max(0, v - 0.6) / 0.4).clamp(0, 1),
-                        child: Transform.scale(
-                          scale: s * 1.1,
-                          child: const Icon(Icons.favorite_rounded, size: 96, color: Color(0xFFE0245E)),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 /// Bottom sheet: paste a URL → platform is detected → live preview → Post.
-class _PasteSheet extends StatefulWidget {
-  const _PasteSheet();
+class PasteSheet extends StatefulWidget {
+  const PasteSheet({super.key});
   @override
-  State<_PasteSheet> createState() => _PasteSheetState();
+  State<PasteSheet> createState() => _PasteSheetState();
 }
 
-class _PasteSheetState extends State<_PasteSheet> {
+class _PasteSheetState extends State<PasteSheet> {
   final _ctl = TextEditingController();
+  final _note = TextEditingController();
   static const _samples = {'X': 'https://x.com/aanya/status/1832491', 'LinkedIn': 'https://linkedin.com/posts/rohan-k-intern', 'Reddit': 'https://reddit.com/r/cscareers/comments/sd'};
 
   String? get _src {
@@ -425,12 +212,14 @@ class _PasteSheetState extends State<_PasteSheet> {
     if (t.contains('x.com') || t.contains('twitter.com')) return 'X';
     if (t.contains('linkedin.com')) return 'LinkedIn';
     if (t.contains('reddit.com')) return 'Reddit';
+    if (t.startsWith('http')) return 'Link';
     return null;
   }
 
   @override
   void dispose() {
     _ctl.dispose();
+    _note.dispose();
     super.dispose();
   }
 
@@ -438,11 +227,19 @@ class _PasteSheetState extends State<_PasteSheet> {
   Widget build(BuildContext context) {
     final src = _src;
     final inset = MediaQuery.of(context).viewInsets.bottom + MediaQuery.of(context).padding.bottom;
+    InputDecoration dec(String h, IconData? ic) => InputDecoration(
+      hintText: h,
+      hintStyle: sans(13, color: C.muted),
+      prefixIcon: ic == null ? null : Icon(ic, color: C.muted),
+      filled: true,
+      fillColor: C.bg,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+    );
     return Container(
       padding: EdgeInsets.fromLTRB(20, 12, 20, inset + 20),
       decoration: BoxDecoration(
         color: C.paper,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -462,15 +259,10 @@ class _PasteSheetState extends State<_PasteSheet> {
             controller: _ctl,
             onChanged: (_) => setState(() {}),
             style: mono(13, color: C.ink),
-            decoration: InputDecoration(
-              hintText: 'https://…',
-              hintStyle: mono(13),
-              prefixIcon: Icon(Icons.link_rounded, color: C.muted),
-              filled: true,
-              fillColor: C.bg,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
-            ),
+            decoration: dec('https://…', Icons.link_rounded),
           ),
+          const SizedBox(height: 10),
+          TextField(controller: _note, maxLines: 2, style: sans(14), decoration: dec('Say something about it (optional)', null)),
           const SizedBox(height: 10),
           Wrap(
             spacing: 8,
@@ -499,7 +291,7 @@ class _PasteSheetState extends State<_PasteSheet> {
             child: src == null
                 ? Container(
                     key: const ValueKey('empty'),
-                    height: 92,
+                    height: 80,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(18),
@@ -518,13 +310,13 @@ class _PasteSheetState extends State<_PasteSheet> {
                     child: Row(
                       children: [
                         Container(
-                          width: 68,
-                          height: 68,
+                          width: 56,
+                          height: 56,
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: srcColor(src)),
                           alignment: Alignment.center,
                           child: Text(
-                            src == 'LinkedIn' ? 'in' : (src == 'Reddit' ? 'r/' : 'X'),
-                            style: sans(22, color: Colors.white, weight: FontWeight.w700),
+                            src == 'LinkedIn' ? 'in' : (src == 'Reddit' ? 'r/' : (src == 'X' ? 'X' : '')),
+                            style: sans(20, color: Colors.white, weight: FontWeight.w700),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -532,9 +324,9 @@ class _PasteSheetState extends State<_PasteSheet> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Tag('Detected: $src', bg: C.bg, fg: srcColor(src)),
+                              Tag('Detected: $src'),
                               const SizedBox(height: 6),
-                              Text('Link preview ready to share with the community', style: sans(14, weight: FontWeight.w600, height: 1.25)),
+                              Text('Link preview ready to share', style: sans(14, weight: FontWeight.w600, height: 1.25)),
                             ],
                           ),
                         ),
@@ -545,21 +337,20 @@ class _PasteSheetState extends State<_PasteSheet> {
           const SizedBox(height: 18),
           PrimaryButton(
             'Post to community',
-            bg: src == null ? C.muted : C.ink,
+            bg: src == null ? C.muted : null,
             onTap: src == null
                 ? null
                 : () => Navigator.of(context).pop(
                     Post(
-                      name: 'Aanya Sharma',
-                      initials: 'AS',
-                      meta: 'IIT Delhi · now',
-                      body: 'Sharing this from $src 👇',
+                      author: me,
+                      time: 'now',
+                      body: _note.text.trim().isEmpty ? 'Sharing this from $src.' : _note.text.trim(),
                       src: src,
                       title: 'Shared from $src',
                       domain: Uri.tryParse(_ctl.text)?.host ?? src,
                       grad: [srcColor(src).withValues(alpha: 0.5), srcColor(src)],
                       likes: 0,
-                      comments: 0,
+                      shares: 0,
                     ),
                   ),
           ),

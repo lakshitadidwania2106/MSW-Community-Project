@@ -57,7 +57,7 @@ class _ReelsScreenState extends State<ReelsScreen> with SingleTickerProviderStat
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(99)),
-                    child: Text('MSW LABS ↗', style: mono(10, color: C.lime)),
+                    child: Text('MSW LABS', style: mono(10, color: C.lime)),
                   ),
                 ),
                 const Spacer(),

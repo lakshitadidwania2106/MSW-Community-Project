@@ -233,7 +233,7 @@ class _PitchScreenState extends State<PitchScreen> {
         'Done',
         onTap: () {
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${_name.text} is live on MSW 💡')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${_name.text} is live on MSW')));
         },
       ),
     ],
